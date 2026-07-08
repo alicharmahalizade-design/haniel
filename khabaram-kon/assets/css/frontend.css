@@ -1,0 +1,178 @@
+/* خبرم کن - استایل فرانت */
+.kk-wrapper {
+	margin: 16px 0;
+	max-width: 420px;
+}
+.kk-wrapper.kk-hidden {
+	display: none;
+}
+.kk-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: var(--kk-width, 100%);
+	padding: 13px 22px;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--kk-color, #fff);
+	background: var(--kk-bg, #111827);
+	border: none;
+	border-radius: var(--kk-radius, 10px);
+	cursor: pointer;
+	transition: background .2s ease, transform .1s ease, box-shadow .2s ease;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
+	font-family: inherit;
+}
+.kk-button:hover {
+	background: var(--kk-bg-hover, #374151);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+}
+.kk-button:active {
+	transform: translateY(1px);
+}
+.kk-button:disabled {
+	opacity: .6;
+	cursor: default;
+}
+.kk-bell {
+	flex: 0 0 auto;
+}
+
+/* فرم */
+.kk-form {
+	margin-top: 12px;
+	border: 1px solid rgba(0, 0, 0, .09);
+	border-radius: calc(var(--kk-radius, 10px) + 4px);
+	background: #fff;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+	overflow: hidden;
+	animation: kkSlide .25s ease;
+}
+@keyframes kkSlide {
+	from { opacity: 0; transform: translateY(-6px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.kk-form-inner {
+	position: relative;
+	padding: 18px;
+}
+.kk-close {
+	position: absolute;
+	inset-inline-start: 12px;
+	top: 10px;
+	width: 28px;
+	height: 28px;
+	border: none;
+	background: transparent;
+	font-size: 22px;
+	line-height: 1;
+	color: #9ca3af;
+	cursor: pointer;
+	border-radius: 6px;
+}
+.kk-close:hover {
+	color: #374151;
+	background: rgba(0, 0, 0, .05);
+}
+.kk-form-title {
+	margin: 0 0 6px;
+	font-size: 16px;
+	font-weight: 800;
+	color: #111827;
+}
+.kk-form-desc {
+	margin: 0 0 14px;
+	font-size: 13px;
+	line-height: 1.7;
+	color: #6b7280;
+}
+.kk-field {
+	margin-bottom: 12px;
+}
+.kk-label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #374151;
+}
+.kk-phone {
+	width: 100%;
+	padding: 12px 14px;
+	font-size: 15px;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 10px;
+	transition: border-color .2s ease, box-shadow .2s ease;
+	box-sizing: border-box;
+	font-family: inherit;
+	text-align: left;
+}
+.kk-phone:focus {
+	outline: none;
+	border-color: var(--kk-accent, #2563eb);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--kk-accent, #2563eb) 20%, transparent);
+}
+.kk-submit {
+	width: 100%;
+	padding: 13px;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--kk-color, #fff);
+	background: var(--kk-bg, #111827);
+	border: none;
+	border-radius: var(--kk-radius, 10px);
+	cursor: pointer;
+	transition: background .2s ease, opacity .2s ease;
+	font-family: inherit;
+}
+.kk-submit:hover {
+	background: var(--kk-bg-hover, #374151);
+}
+.kk-submit:disabled {
+	opacity: .6;
+	cursor: default;
+}
+.kk-privacy {
+	margin: 10px 0 0;
+	font-size: 11.5px;
+	line-height: 1.6;
+	color: #9ca3af;
+}
+.kk-message {
+	margin-top: 12px;
+	font-size: 13.5px;
+	line-height: 1.7;
+	padding: 0;
+}
+.kk-message.kk-ok {
+	padding: 12px 14px;
+	border-radius: 10px;
+	background: #ecfdf5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+}
+.kk-message.kk-err {
+	padding: 12px 14px;
+	border-radius: 10px;
+	background: #fef2f2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
+/* حالت تیره ساده */
+@media (prefers-color-scheme: dark) {
+	.kk-form {
+		background: #1f2937;
+		border-color: rgba(255, 255, 255, .08);
+	}
+	.kk-form-title { color: #f9fafb; }
+	.kk-form-desc { color: #9ca3af; }
+	.kk-label { color: #d1d5db; }
+	.kk-phone {
+		background: #111827;
+		border-color: #374151;
+		color: #f9fafb;
+	}
+}

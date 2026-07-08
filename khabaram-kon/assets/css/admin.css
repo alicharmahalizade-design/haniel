@@ -1,0 +1,122 @@
+/* خبرم کن - استایل مدیریت */
+.kk-wrap { direction: rtl; }
+.kk-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.kk-title .dashicons {
+	color: #2563eb;
+	font-size: 26px;
+	width: 26px;
+	height: 26px;
+}
+.kk-subtitle {
+	color: #6b7280;
+	margin-top: -4px;
+	font-size: 13px;
+}
+.kk-tabs { margin-bottom: 20px; }
+.kk-form .form-table th {
+	width: 240px;
+}
+
+/* سوییچ */
+.kk-switch {
+	position: relative;
+	display: inline-block;
+	width: 46px;
+	height: 26px;
+	vertical-align: middle;
+}
+.kk-switch input { opacity: 0; width: 0; height: 0; }
+.kk-switch span {
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background: #cbd5e1;
+	border-radius: 999px;
+	transition: .25s;
+}
+.kk-switch span:before {
+	content: "";
+	position: absolute;
+	height: 20px;
+	width: 20px;
+	right: 3px;
+	top: 3px;
+	background: #fff;
+	border-radius: 50%;
+	transition: .25s;
+	box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.kk-switch input:checked + span { background: #2563eb; }
+.kk-switch input:checked + span:before { transform: translateX(-20px); }
+
+/* پیش‌نمایش */
+.kk-preview-box {
+	margin-top: 20px;
+	padding: 20px;
+	background: #f8fafc;
+	border: 1px dashed #cbd5e1;
+	border-radius: 12px;
+	max-width: 420px;
+}
+.kk-preview-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 13px 22px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #fff;
+	background: #111827;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	width: 100%;
+}
+
+/* آمار */
+.kk-stats {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin: 18px 0 24px;
+}
+.kk-stat {
+	flex: 1;
+	min-width: 140px;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 18px 20px;
+	text-align: center;
+	box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.kk-stat-num {
+	display: block;
+	font-size: 28px;
+	font-weight: 800;
+	color: #111827;
+}
+.kk-stat-label {
+	display: block;
+	margin-top: 4px;
+	font-size: 13px;
+	color: #6b7280;
+}
+
+/* بج وضعیت */
+.kk-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 999px;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+}
+.kk-test-result { margin-inline-start: 10px; font-weight: 600; }
+.kk-test-result.ok { color: #15803d; }
+.kk-test-result.err { color: #b91c1c; }
