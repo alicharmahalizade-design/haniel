@@ -19,6 +19,7 @@ $tabs       = array(
 	'sms'        => __( 'پیامک', 'khabaram-kon' ),
 	'link'       => __( 'لینک کوتاه', 'khabaram-kon' ),
 	'conversion' => __( 'گزارش تبدیل', 'khabaram-kon' ),
+	'alerts'     => __( 'اعلان مدیر', 'khabaram-kon' ),
 	'advanced'   => __( 'پیشرفته', 'khabaram-kon' ),
 );
 ?>
@@ -210,7 +211,11 @@ $tabs       = array(
 				<input type="text" id="kk-test-phone" placeholder="<?php esc_attr_e( 'شماره برای تست', 'khabaram-kon' ); ?>" class="regular-text">
 				<span id="kk-test-result" class="kk-test-result"></span>
 			</p>
-			<p class="description"><?php esc_html_e( 'ابتدا تنظیمات را ذخیره کنید، سپس تست بگیرید.', 'khabaram-kon' ); ?></p>
+			<p>
+				<button type="button" class="button button-secondary" id="kk-check-credit"><?php esc_html_e( 'بررسی اعتبار و تست اتصال', 'khabaram-kon' ); ?></button>
+				<span id="kk-credit-result" class="kk-test-result"></span>
+			</p>
+			<p class="description"><?php esc_html_e( 'ابتدا تنظیمات را ذخیره کنید، سپس تست بگیرید. (نمایش اعتبار برای فراز اس‌ام‌اس، کاوه‌نگار، SMS.ir و ملی‌پیامک در دسترس است.)', 'khabaram-kon' ); ?></p>
 		</div>
 
 		<?php // ------------- لینک کوتاه ------------- ?>
@@ -261,6 +266,49 @@ $tabs       = array(
 				</tr>
 			</table>
 			<p class="description"><?php esc_html_e( 'آمار کامل تبدیل و درآمد را در صفحه «درخواست‌ها» می‌بینید.', 'khabaram-kon' ); ?></p>
+		</div>
+
+		<?php // ------------- اعلان مدیر ------------- ?>
+		<div class="kk-tab-panel" data-tab="alerts" style="<?php echo 'alerts' === $active_tab ? '' : 'display:none'; ?>">
+			<p class="description" style="max-width:640px">
+				<?php esc_html_e( 'وقتی تعداد افرادی که برای یک محصول ناموجود «خبرم کن» زده‌اند از حد مشخصی بگذرد، به شما اطلاع داده می‌شود تا آن محصول را زودتر شارژ کنید. اعلان پلکانی است (در هر ضریب از آستانه یک‌بار) و پس از موجود شدن محصول ریست می‌شود.', 'khabaram-kon' ); ?>
+			</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><?php esc_html_e( 'فعال‌سازی اعلان تقاضا', 'khabaram-kon' ); ?></th>
+					<td><label class="kk-switch"><input type="checkbox" name="kk_settings[demand_alert_enabled]" value="yes" <?php checked( $s['demand_alert_enabled'], 'yes' ); ?>><span></span></label></td>
+				</tr>
+				<tr>
+					<th><label for="kk_demand_threshold"><?php esc_html_e( 'آستانه تعداد درخواست', 'khabaram-kon' ); ?></label></th>
+					<td><input type="number" id="kk_demand_threshold" name="kk_settings[demand_threshold]" value="<?php echo esc_attr( $s['demand_threshold'] ); ?>" class="small-text" min="1">
+						<p class="description"><?php esc_html_e( 'مثلاً ۱۰: با رسیدن به ۱۰، ۲۰، ۳۰ نفر و... اعلان ارسال می‌شود.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_demand_alert_email"><?php esc_html_e( 'ایمیل دریافت اعلان', 'khabaram-kon' ); ?></label></th>
+					<td><input type="email" id="kk_demand_alert_email" name="kk_settings[demand_alert_email]" value="<?php echo esc_attr( $s['demand_alert_email'] ); ?>" class="regular-text">
+						<p class="description"><?php esc_html_e( 'خالی = ایمیل مدیر سایت.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_demand_alert_sms_phone"><?php esc_html_e( 'شماره موبایل مدیر (پیامک)', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_demand_alert_sms_phone" name="kk_settings[demand_alert_sms_phone]" value="<?php echo esc_attr( $s['demand_alert_sms_phone'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'اگر پر شود، اعلان با متن ساده (بدون پترن) پیامک می‌شود.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_telegram_bot_token"><?php esc_html_e( 'توکن بات تلگرام', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_telegram_bot_token" name="kk_settings[telegram_bot_token]" value="<?php echo esc_attr( $s['telegram_bot_token'] ); ?>" class="regular-text" dir="ltr" autocomplete="off">
+						<p class="description"><?php esc_html_e( 'از @BotFather یک بات بسازید و توکن آن را اینجا بگذارید.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_telegram_chat_id"><?php esc_html_e( 'شناسه چت/کانال تلگرام', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_telegram_chat_id" name="kk_settings[telegram_chat_id]" value="<?php echo esc_attr( $s['telegram_chat_id'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'مثلاً عدد chat_id شخصی، یا @username کانال (بات باید ادمین کانال باشد).', 'khabaram-kon' ); ?></p></td>
+				</tr>
+			</table>
+			<p>
+				<button type="button" class="button" id="kk-test-alert"><?php esc_html_e( 'ارسال اعلان آزمایشی', 'khabaram-kon' ); ?></button>
+				<span id="kk-alert-result" class="kk-test-result"></span>
+			</p>
+			<p class="description"><?php esc_html_e( 'ابتدا تنظیمات را ذخیره کنید، سپس تست بگیرید.', 'khabaram-kon' ); ?></p>
 		</div>
 
 		<?php // ------------- پیشرفته ------------- ?>

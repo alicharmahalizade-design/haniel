@@ -12,6 +12,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class KK_SMS {
 
 	/**
+	 * پرچم اجبار به ارسال متن ساده (نادیده گرفتن پترن) برای اعلان‌های مدیر.
+	 *
+	 * @var bool
+	 */
+	private static $force_plain = false;
+
+	/**
 	 * درگاه‌های پشتیبانی‌شده.
 	 *
 	 * @return array
@@ -62,6 +69,30 @@ class KK_SMS {
 	}
 
 	/**
+	 * ارسال متن ساده بدون پترن (برای اعلان‌های مدیر).
+	 *
+	 * @param string $phone   شماره.
+	 * @param string $message متن.
+	 * @return true|WP_Error
+	 */
+	public static function send_plain( $phone, $message ) {
+		self::$force_plain = true;
+		$result            = self::send( $phone, $message );
+		self::$force_plain = false;
+		return $result;
+	}
+
+	/**
+	 * آیا پترن باید اعمال شود؟
+	 *
+	 * @param string $pattern کد پترن.
+	 * @return bool
+	 */
+	private static function use_pattern( $pattern ) {
+		return ! empty( $pattern ) && ! self::$force_plain;
+	}
+
+	/**
 	 * فراز اس‌ام‌اس / ایران‌پیامک (IPPanel REST v1).
 	 *
 	 * @param string $phone   شماره.
@@ -83,7 +114,7 @@ class KK_SMS {
 
 		$base = 'https://api2.ippanel.com/api/v1';
 
-		if ( ! empty( $pattern ) ) {
+		if ( self::use_pattern( $pattern ) ) {
 			// نام متغیرهای پترن (پیش‌فرض product و link).
 			$var_product = KK_Settings::get( 'pattern_var_product', 'product' );
 			$var_link    = KK_Settings::get( 'pattern_var_link', 'link' );
@@ -157,7 +188,7 @@ class KK_SMS {
 			return new WP_Error( 'kk_no_api', __( 'کلید API کاوه‌نگار تنظیم نشده است.', 'khabaram-kon' ) );
 		}
 
-		if ( ! empty( $pattern ) ) {
+		if ( self::use_pattern( $pattern ) ) {
 			// ارسال پترن‌دار (verify/lookup).
 			$url  = "https://api.kavenegar.com/v1/{$api}/verify/lookup.json";
 			$body = array(
@@ -236,7 +267,7 @@ class KK_SMS {
 			return new WP_Error( 'kk_no_api', __( 'کلید API سرویس SMS.ir تنظیم نشده است.', 'khabaram-kon' ) );
 		}
 
-		if ( ! empty( $pattern ) ) {
+		if ( self::use_pattern( $pattern ) ) {
 			$url  = 'https://api.sms.ir/v1/send/verify';
 			$body = wp_json_encode(
 				array(
@@ -408,6 +439,146 @@ class KK_SMS {
 	 */
 	private static function pattern_safe( $val ) {
 		return str_replace( array( "\n", "\r" ), ' ', trim( $val ) );
+	}
+
+	/**
+	 * دریافت اعتبار پنل پیامک (و تست اتصال).
+	 *
+	 * @return array|WP_Error آرایه شامل credit و unit یا خطا.
+	 */
+	public static function get_credit() {
+		$gateway = KK_Settings::get( 'sms_gateway', 'farazsms' );
+		switch ( $gateway ) {
+			case 'farazsms':
+				return self::credit_farazsms();
+			case 'kavenegar':
+				return self::credit_kavenegar();
+			case 'smsir':
+				return self::credit_smsir();
+			case 'melipayamak':
+				return self::credit_melipayamak();
+			default:
+				return new WP_Error( 'kk_not_supported', __( 'نمایش اعتبار برای این درگاه پشتیبانی نمی‌شود.', 'khabaram-kon' ) );
+		}
+	}
+
+	/**
+	 * اعتبار فراز اس‌ام‌اس / ایران‌پیامک.
+	 *
+	 * @return array|WP_Error
+	 */
+	private static function credit_farazsms() {
+		$api = KK_Settings::get( 'sms_api_key' );
+		if ( empty( $api ) ) {
+			return new WP_Error( 'kk_no_api', __( 'کلید API (apikey) تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		$res = wp_remote_get(
+			'https://api2.ippanel.com/api/v1/sms/accounting/credit/show',
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'apikey' => $api,
+					'Accept' => 'application/json',
+				),
+			)
+		);
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$data = json_decode( wp_remote_retrieve_body( $res ), true );
+
+		$credit = null;
+		if ( isset( $data['data']['credit'] ) && is_numeric( $data['data']['credit'] ) ) {
+			$credit = $data['data']['credit'];
+		} elseif ( isset( $data['data'] ) && is_numeric( $data['data'] ) ) {
+			$credit = $data['data'];
+		}
+		if ( null === $credit ) {
+			return new WP_Error( 'kk_credit_failed', self::extract_error( $data ) );
+		}
+		return array( 'credit' => (float) $credit, 'unit' => __( 'ریال', 'khabaram-kon' ) );
+	}
+
+	/**
+	 * اعتبار کاوه‌نگار.
+	 *
+	 * @return array|WP_Error
+	 */
+	private static function credit_kavenegar() {
+		$api = KK_Settings::get( 'sms_api_key' );
+		if ( empty( $api ) ) {
+			return new WP_Error( 'kk_no_api', __( 'کلید API تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		$res = wp_remote_get( "https://api.kavenegar.com/v1/{$api}/account/info.json", array( 'timeout' => 20 ) );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$data = json_decode( wp_remote_retrieve_body( $res ), true );
+		if ( isset( $data['entries']['remaincredit'] ) ) {
+			return array( 'credit' => (float) $data['entries']['remaincredit'], 'unit' => __( 'ریال', 'khabaram-kon' ) );
+		}
+		return new WP_Error( 'kk_credit_failed', self::extract_error( $data ) );
+	}
+
+	/**
+	 * اعتبار SMS.ir.
+	 *
+	 * @return array|WP_Error
+	 */
+	private static function credit_smsir() {
+		$api = KK_Settings::get( 'sms_api_key' );
+		if ( empty( $api ) ) {
+			return new WP_Error( 'kk_no_api', __( 'کلید API تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		$res = wp_remote_get(
+			'https://api.sms.ir/v1/credit',
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'x-api-key' => $api,
+					'Accept'    => 'application/json',
+				),
+			)
+		);
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$data = json_decode( wp_remote_retrieve_body( $res ), true );
+		if ( isset( $data['data'] ) && is_numeric( $data['data'] ) ) {
+			return array( 'credit' => (float) $data['data'], 'unit' => __( 'پیامک', 'khabaram-kon' ) );
+		}
+		return new WP_Error( 'kk_credit_failed', self::extract_error( $data ) );
+	}
+
+	/**
+	 * اعتبار ملی پیامک.
+	 *
+	 * @return array|WP_Error
+	 */
+	private static function credit_melipayamak() {
+		$user = KK_Settings::get( 'sms_username' );
+		$pass = KK_Settings::get( 'sms_password' );
+		if ( empty( $user ) || empty( $pass ) ) {
+			return new WP_Error( 'kk_no_creds', __( 'نام کاربری یا رمز تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		$res = wp_remote_post(
+			'https://rest.payamak-panel.com/api/SmsCredit/GetCredit',
+			array(
+				'timeout' => 20,
+				'body'    => array(
+					'username' => $user,
+					'password' => $pass,
+				),
+			)
+		);
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$data = json_decode( wp_remote_retrieve_body( $res ), true );
+		if ( isset( $data['Value'] ) && is_numeric( $data['Value'] ) && ( ! isset( $data['RetStatus'] ) || 1 === (int) $data['RetStatus'] ) ) {
+			return array( 'credit' => (float) $data['Value'], 'unit' => __( 'پیامک', 'khabaram-kon' ) );
+		}
+		return new WP_Error( 'kk_credit_failed', self::extract_error( $data ) );
 	}
 
 	/**

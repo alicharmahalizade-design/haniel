@@ -68,6 +68,48 @@
 				$btn.prop( 'disabled', false );
 			} );
 		} );
+
+		// بررسی اعتبار پنل پیامک
+		$( '#kk-check-credit' ).on( 'click', function () {
+			var $btn = $( this );
+			var $res = $( '#kk-credit-result' ).removeClass( 'ok err' ).text( 'در حال بررسی...' );
+			$btn.prop( 'disabled', true );
+			$.post( ajaxurl, {
+				action: 'kk_check_credit',
+				nonce: kkAdmin.nonce
+			} ).done( function ( r ) {
+				if ( r && r.success ) {
+					$res.addClass( 'ok' ).text( r.data.message );
+				} else {
+					$res.addClass( 'err' ).text( ( r && r.data && r.data.message ) || 'خطا در بررسی اعتبار.' );
+				}
+			} ).fail( function () {
+				$res.addClass( 'err' ).text( 'خطا در ارتباط.' );
+			} ).always( function () {
+				$btn.prop( 'disabled', false );
+			} );
+		} );
+
+		// ارسال اعلان آزمایشی مدیر
+		$( '#kk-test-alert' ).on( 'click', function () {
+			var $btn = $( this );
+			var $res = $( '#kk-alert-result' ).removeClass( 'ok err' ).text( 'در حال ارسال...' );
+			$btn.prop( 'disabled', true );
+			$.post( ajaxurl, {
+				action: 'kk_test_alert',
+				nonce: kkAdmin.nonce
+			} ).done( function ( r ) {
+				if ( r && r.success ) {
+					$res.addClass( 'ok' ).text( r.data.message );
+				} else {
+					$res.addClass( 'err' ).text( ( r && r.data && r.data.message ) || 'خطا در ارسال اعلان.' );
+				}
+			} ).fail( function () {
+				$res.addClass( 'err' ).text( 'خطا در ارتباط.' );
+			} ).always( function () {
+				$btn.prop( 'disabled', false );
+			} );
+		} );
 	} );
 
 } )( jQuery );

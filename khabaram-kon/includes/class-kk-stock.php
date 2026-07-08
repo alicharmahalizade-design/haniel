@@ -97,6 +97,11 @@ class KK_Stock {
 			return;
 		}
 
+		// محصول موجود شد؛ شمارنده اعلان تقاضا ریست شود تا دور بعد دوباره اعلام شود.
+		if ( class_exists( 'KK_Alerts' ) ) {
+			KK_Alerts::reset( $product_id );
+		}
+
 		global $wpdb;
 		$table = $wpdb->prefix . KK_TABLE;
 

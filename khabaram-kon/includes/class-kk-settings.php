@@ -73,6 +73,14 @@ class KK_Settings {
 			'utm_campaign'         => 'back-in-stock',
 			'attribution_window_days' => 14,
 
+			// اعلان مدیر (تقاضای بالا).
+			'demand_alert_enabled'    => 'no',
+			'demand_threshold'        => 10,
+			'demand_alert_email'      => '',
+			'demand_alert_sms_phone'  => '',
+			'telegram_bot_token'      => '',
+			'telegram_chat_id'        => '',
+
 			// لینک کوتاه.
 			'shortlink_enabled'    => 'yes',
 			'shortlink_slug'       => 'kh',
@@ -197,8 +205,8 @@ class KK_Settings {
 		$output   = self::all();
 		$input    = is_array( $input ) ? $input : array();
 
-		$yes_no      = array( 'enabled', 'enable_simple', 'enable_variable', 'hide_add_to_cart', 'button_icon', 'btn_full_width', 'shortlink_enabled', 'store_user_phone', 'delete_on_uninstall', 'conversion_enabled' );
-		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'button_position', 'pattern_var_product', 'pattern_var_link', 'utm_source', 'utm_medium', 'utm_campaign' );
+		$yes_no      = array( 'enabled', 'enable_simple', 'enable_variable', 'hide_add_to_cart', 'button_icon', 'btn_full_width', 'shortlink_enabled', 'store_user_phone', 'delete_on_uninstall', 'conversion_enabled', 'demand_alert_enabled' );
+		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'button_position', 'pattern_var_product', 'pattern_var_link', 'utm_source', 'utm_medium', 'utm_campaign', 'demand_alert_sms_phone', 'telegram_bot_token', 'telegram_chat_id' );
 		$area_fields = array( 'form_desc', 'success_message', 'already_message', 'privacy_note', 'sms_message' );
 		$color_fields = array( 'btn_bg', 'btn_color', 'btn_bg_hover', 'accent_color' );
 
@@ -211,11 +219,11 @@ class KK_Settings {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_hex_color( $input[ $key ] ) : $default;
 			} elseif ( in_array( $key, $text_fields, true ) ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( wp_unslash( $input[ $key ] ) ) : $default;
-			} elseif ( 'btn_radius' === $key || 'button_priority' === $key || 'attribution_window_days' === $key ) {
+			} elseif ( 'btn_radius' === $key || 'button_priority' === $key || 'attribution_window_days' === $key || 'demand_threshold' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? absint( $input[ $key ] ) : $default;
 			} elseif ( 'sms_api_key' === $key || 'sms_password' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? trim( sanitize_text_field( wp_unslash( $input[ $key ] ) ) ) : $default;
-			} elseif ( 'notify_admin_email' === $key ) {
+			} elseif ( 'notify_admin_email' === $key || 'demand_alert_email' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_email( $input[ $key ] ) : $default;
 			} elseif ( 'sms_gateway' === $key ) {
 				$allowed        = array_keys( KK_SMS::gateways() );

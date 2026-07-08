@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.2.0 =
+* اعلان تقاضای بالا به مدیر (تلگرام، پیامک، ایمیل) هنگام عبور تعداد درخواست یک محصول از آستانه، به‌صورت پلکانی و با ریست خودکار پس از موجود شدن.
+* بررسی اعتبار پنل پیامک و تست اتصال درگاه در تنظیمات (فراز اس‌ام‌اس، کاوه‌نگار، SMS.ir، ملی‌پیامک).
+* دکمه ارسال اعلان آزمایشی به کانال‌های مدیر.
 
 = 1.1.0 =
 * افزودن درگاه فراز اس‌ام‌اس / ایران‌پیامک (IPPanel) با پشتیبانی پترن.

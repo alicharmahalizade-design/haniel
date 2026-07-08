@@ -18,6 +18,8 @@ class KK_Ajax {
 		add_action( 'wp_ajax_kk_subscribe', array( __CLASS__, 'subscribe' ) );
 		add_action( 'wp_ajax_nopriv_kk_subscribe', array( __CLASS__, 'subscribe' ) );
 		add_action( 'wp_ajax_kk_test_sms', array( __CLASS__, 'test_sms' ) );
+		add_action( 'wp_ajax_kk_check_credit', array( __CLASS__, 'check_credit' ) );
+		add_action( 'wp_ajax_kk_test_alert', array( __CLASS__, 'test_alert' ) );
 	}
 
 	/**
@@ -144,6 +146,80 @@ class KK_Ajax {
 			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
 		}
 		wp_send_json_success( array( 'message' => __( 'پیامک آزمایشی ارسال شد ✅', 'khabaram-kon' ) ) );
+	}
+
+	/**
+	 * بررسی اعتبار پنل پیامک (و تست اتصال).
+	 */
+	public static function check_credit() {
+		check_ajax_referer( 'kk_subscribe', 'nonce' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'دسترسی ندارید.', 'khabaram-kon' ) ) );
+		}
+
+		$result = KK_SMS::get_credit();
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message' => sprintf(
+					/* translators: 1: credit amount, 2: unit */
+					__( 'اتصال برقرار است ✅ اعتبار: %1$s %2$s', 'khabaram-kon' ),
+					number_format_i18n( (float) $result['credit'] ),
+					$result['unit']
+				),
+			)
+		);
+	}
+
+	/**
+	 * ارسال اعلان آزمایشی به کانال‌های مدیر.
+	 */
+	public static function test_alert() {
+		check_ajax_referer( 'kk_subscribe', 'nonce' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'دسترسی ندارید.', 'khabaram-kon' ) ) );
+		}
+
+		$text    = __( "🔔 این یک اعلان آزمایشی از افزونه «خبرم کن» است.\nاگر این پیام را دریافت کردید، کانال اعلان مدیر درست کار می‌کند.", 'khabaram-kon' );
+		$results = KK_Alerts::send_all_channels( $text, __( 'اعلان آزمایشی', 'khabaram-kon' ) );
+
+		$lines = array();
+		foreach ( $results as $channel => $res ) {
+			if ( null === $res ) {
+				continue;
+			}
+			$label = self::channel_label( $channel );
+			if ( is_wp_error( $res ) ) {
+				$lines[] = $label . ': ✖ ' . $res->get_error_message();
+			} elseif ( $res ) {
+				$lines[] = $label . ': ✅';
+			} else {
+				$lines[] = $label . ': ✖';
+			}
+		}
+
+		if ( empty( $lines ) ) {
+			wp_send_json_error( array( 'message' => __( 'هیچ کانالی پیکربندی نشده است.', 'khabaram-kon' ) ) );
+		}
+		wp_send_json_success( array( 'message' => implode( ' | ', $lines ) ) );
+	}
+
+	/**
+	 * برچسب فارسی کانال.
+	 *
+	 * @param string $channel کلید کانال.
+	 * @return string
+	 */
+	private static function channel_label( $channel ) {
+		$map = array(
+			'email'    => __( 'ایمیل', 'khabaram-kon' ),
+			'sms'      => __( 'پیامک', 'khabaram-kon' ),
+			'telegram' => __( 'تلگرام', 'khabaram-kon' ),
+		);
+		return isset( $map[ $channel ] ) ? $map[ $channel ] : $channel;
 	}
 
 	/**
