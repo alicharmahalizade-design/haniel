@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.5.2 =
+* رفع مشکل باز شدن پاپ‌آپ داخل نوار قالب: فرم هنگام باز شدن به body منتقل می‌شود تا از والدهای دارای transform خارج و واقعاً وسط صفحه نمایش داده شود.
+* استقلال استایل پاپ‌آپ از ساختار قالب و افزایش z-index.
 
 = 1.5.1 =
 * بهبود ظاهر دکمه در فضاهای باریک قالب (تک‌خطی ماندن متن، حداقل ارتفاع، ریسپانسیو موبایل) تا به‌شکل مربع/چندخطی درنیاید.

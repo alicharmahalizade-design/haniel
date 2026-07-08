@@ -162,7 +162,7 @@ class KK_Frontend {
 				<span class="kk-button-text"><?php echo esc_html( $s['button_text'] ); ?></span>
 			</button>
 
-			<div class="kk-form" hidden>
+			<div class="kk-form<?php echo 'popup' === $s['form_style'] ? ' kk-form--popup' : ''; ?>" data-product="<?php echo esc_attr( $product_id ); ?>" hidden>
 				<div class="kk-form-inner">
 					<button type="button" class="kk-close" aria-label="<?php esc_attr_e( 'بستن', 'khabaram-kon' ); ?>">&times;</button>
 					<?php if ( ! empty( $s['form_title'] ) ) : ?>

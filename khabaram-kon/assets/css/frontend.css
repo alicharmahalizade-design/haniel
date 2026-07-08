@@ -178,7 +178,7 @@
 }
 
 /* ---------- حالت پاپ‌آپ (مودال) ---------- */
-.kk-style-popup .kk-form {
+.kk-form--popup {
 	position: fixed;
 	inset: 0;
 	margin: 0;
@@ -192,15 +192,15 @@
 	align-items: center;
 	justify-content: center;
 	padding: 20px;
-	z-index: 999999;
+	z-index: 2147483000;
 	overflow-y: auto;
 	animation: kkFade .2s ease;
 }
 /* وقتی مخفی است، حتماً نمایش داده نشود (مهم چون display:flex بر hidden غلبه می‌کند) */
-.kk-style-popup .kk-form[hidden] {
+.kk-form--popup[hidden] {
 	display: none;
 }
-.kk-style-popup .kk-form-inner {
+.kk-form--popup .kk-form-inner {
 	width: 100%;
 	max-width: 400px;
 	background: #fff;
@@ -228,7 +228,7 @@ html.kk-modal-open body {
 		background: #1f2937;
 		border-color: rgba(255, 255, 255, .08);
 	}
-	.kk-style-popup .kk-form-inner {
+	.kk-form--popup .kk-form-inner {
 		background: #1f2937;
 	}
 	.kk-form-title { color: #f9fafb; }

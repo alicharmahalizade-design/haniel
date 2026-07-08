@@ -16,19 +16,39 @@
 
 	$( function () {
 
+		// نگه‌داری ارجاع فرم هر wrapper (چون در حالت پاپ‌آپ به body منتقل می‌شود)
+		function formOf( $wrap ) {
+			var $f = $wrap.data( 'kkForm' );
+			if ( ! $f || ! $f.length ) {
+				$f = $wrap.find( '.kk-form' );
+				$wrap.data( 'kkForm', $f );
+			}
+			return $f;
+		}
+
 		function openForm( $wrap ) {
-			var $form = $wrap.find( '.kk-form' );
-			$form.prop( 'hidden', false );
-			$wrap.find( '.kk-button' ).hide();
-			if ( $wrap.hasClass( 'kk-style-popup' ) ) {
+			var $form = formOf( $wrap );
+			$form.data( 'kkHome', $wrap );
+			// در حالت پاپ‌آپ، فرم را به body منتقل کن تا از والدهای دارای transform خارج شده و واقعاً تمام‌صفحه شود
+			if ( $form.hasClass( 'kk-form--popup' ) ) {
+				$( 'body' ).append( $form );
 				$( 'html' ).addClass( 'kk-modal-open' );
 			}
+			$form.prop( 'hidden', false );
+			$wrap.find( '.kk-button' ).hide();
 			$form.find( '.kk-phone' ).trigger( 'focus' );
 		}
 
-		function closeForm( $wrap ) {
-			$wrap.find( '.kk-form' ).prop( 'hidden', true );
-			$wrap.find( '.kk-button' ).show();
+		function closeForm( $form ) {
+			var $home = $form.data( 'kkHome' );
+			$form.prop( 'hidden', true );
+			// اگر به body منتقل شده، به جای اصلی‌اش برگردان
+			if ( $form.parent().is( 'body' ) && $home && $home.length ) {
+				$home.append( $form );
+			}
+			if ( $home && $home.length ) {
+				$home.find( '.kk-button' ).show();
+			}
 			$( 'html' ).removeClass( 'kk-modal-open' );
 		}
 
@@ -39,25 +59,24 @@
 
 		// بستن با دکمه بستن
 		$( document ).on( 'click', '.kk-close', function () {
-			closeForm( $( this ).closest( '.kk-wrapper' ) );
+			closeForm( $( this ).closest( '.kk-form' ) );
 		} );
 
 		// بستن با کلیک روی پس‌زمینه پاپ‌آپ
-		$( document ).on( 'click', '.kk-style-popup .kk-form', function ( e ) {
+		$( document ).on( 'click', '.kk-form--popup', function ( e ) {
 			if ( e.target === this ) {
-				closeForm( $( this ).closest( '.kk-wrapper' ) );
+				closeForm( $( this ) );
 			}
 		} );
 
 		// بستن با کلید Escape
 		$( document ).on( 'keydown', function ( e ) {
 			if ( e.key === 'Escape' ) {
-				var $open = $( '.kk-style-popup .kk-form' ).filter( function () {
-					return ! this.hidden;
+				$( '.kk-form--popup' ).each( function () {
+					if ( ! this.hidden ) {
+						closeForm( $( this ) );
+					}
 				} );
-				if ( $open.length ) {
-					closeForm( $open.closest( '.kk-wrapper' ) );
-				}
 			}
 		} );
 
@@ -72,11 +91,11 @@
 		// ارسال درخواست
 		$( document ).on( 'click', '.kk-submit', function () {
 			var $btn   = $( this );
-			var $wrap  = $btn.closest( '.kk-wrapper' );
 			var $form  = $btn.closest( '.kk-form' );
 			var $msg   = $form.find( '.kk-message' );
 			var phone  = normalizePhone( $form.find( '.kk-phone' ).val() );
-			var product = $wrap.data( 'product' );
+			// شناسه محصول از خود فرم خوانده می‌شود (چون ممکن است به body منتقل شده باشد)
+			var product = $form.attr( 'data-product' ) || ( $form.data( 'kkHome' ) && $form.data( 'kkHome' ).data( 'product' ) );
 			var variation = $form.find( '.kk-variation-id' ).val() || 0;
 
 			$msg.removeClass( 'kk-ok kk-err' ).text( '' );
@@ -115,9 +134,10 @@
 
 			// وقتی متغیری انتخاب شد و اطلاعاتش لود شد
 			$variForm.on( 'found_variation', function ( event, variation ) {
+				var $form = formOf( $kkVar );
 				if ( ! variation.is_in_stock && ! variation.backorders_allowed ) {
 					$kkVar.removeClass( 'kk-hidden' );
-					$kkVar.find( '.kk-variation-id' ).val( variation.variation_id );
+					$form.find( '.kk-variation-id' ).val( variation.variation_id );
 				} else {
 					hideVari();
 				}
@@ -129,12 +149,17 @@
 			} );
 
 			function hideVari() {
+				var $form = formOf( $kkVar );
+				// اگر پاپ‌آپ باز و به body منتقل شده، ببند و برگردان
+				if ( $form.parent().is( 'body' ) ) {
+					closeForm( $form );
+				}
 				$kkVar.addClass( 'kk-hidden' );
-				$kkVar.find( '.kk-form' ).prop( 'hidden', true );
+				$form.prop( 'hidden', true );
 				$kkVar.find( '.kk-button' ).show();
-				$kkVar.find( '.kk-variation-id' ).val( 0 );
-				$kkVar.find( '.kk-message' ).removeClass( 'kk-ok kk-err' ).text( '' );
-				$kkVar.find( '.kk-field, .kk-submit, .kk-privacy' ).show();
+				$form.find( '.kk-variation-id' ).val( 0 );
+				$form.find( '.kk-message' ).removeClass( 'kk-ok kk-err' ).text( '' );
+				$form.find( '.kk-field, .kk-submit, .kk-privacy' ).show();
 				$( 'html' ).removeClass( 'kk-modal-open' );
 			}
 		}
