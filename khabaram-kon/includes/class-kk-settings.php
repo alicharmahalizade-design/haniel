@@ -62,7 +62,16 @@ class KK_Settings {
 			'sms_password'         => '',
 			'sms_sender'           => '',
 			'sms_pattern'          => '',
+			'pattern_var_product'  => 'product',
+			'pattern_var_link'     => 'link',
 			'sms_message'          => 'محصول «{product}» موجود شد ✅' . "\n" . 'لینک خرید: {shortlink}',
+
+			// گزارش تبدیل.
+			'conversion_enabled'   => 'yes',
+			'utm_source'           => 'sms',
+			'utm_medium'           => 'khabaram-kon',
+			'utm_campaign'         => 'back-in-stock',
+			'attribution_window_days' => 14,
 
 			// لینک کوتاه.
 			'shortlink_enabled'    => 'yes',
@@ -188,8 +197,8 @@ class KK_Settings {
 		$output   = self::all();
 		$input    = is_array( $input ) ? $input : array();
 
-		$yes_no      = array( 'enabled', 'enable_simple', 'enable_variable', 'hide_add_to_cart', 'button_icon', 'btn_full_width', 'shortlink_enabled', 'store_user_phone', 'delete_on_uninstall' );
-		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'button_position' );
+		$yes_no      = array( 'enabled', 'enable_simple', 'enable_variable', 'hide_add_to_cart', 'button_icon', 'btn_full_width', 'shortlink_enabled', 'store_user_phone', 'delete_on_uninstall', 'conversion_enabled' );
+		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'button_position', 'pattern_var_product', 'pattern_var_link', 'utm_source', 'utm_medium', 'utm_campaign' );
 		$area_fields = array( 'form_desc', 'success_message', 'already_message', 'privacy_note', 'sms_message' );
 		$color_fields = array( 'btn_bg', 'btn_color', 'btn_bg_hover', 'accent_color' );
 
@@ -202,7 +211,7 @@ class KK_Settings {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_hex_color( $input[ $key ] ) : $default;
 			} elseif ( in_array( $key, $text_fields, true ) ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( wp_unslash( $input[ $key ] ) ) : $default;
-			} elseif ( 'btn_radius' === $key || 'button_priority' === $key ) {
+			} elseif ( 'btn_radius' === $key || 'button_priority' === $key || 'attribution_window_days' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? absint( $input[ $key ] ) : $default;
 			} elseif ( 'sms_api_key' === $key || 'sms_password' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? trim( sanitize_text_field( wp_unslash( $input[ $key ] ) ) ) : $default;

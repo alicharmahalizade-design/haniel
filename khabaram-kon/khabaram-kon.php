@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // جلوگیری از دسترسی مستقیم
 }
 
-define( 'KK_VERSION', '1.0.0' );
+define( 'KK_VERSION', '1.1.0' );
 define( 'KK_PLUGIN_FILE', __FILE__ );
 define( 'KK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -46,6 +46,7 @@ require_once KK_PLUGIN_DIR . 'includes/class-kk-shortlink.php';
 require_once KK_PLUGIN_DIR . 'includes/class-kk-frontend.php';
 require_once KK_PLUGIN_DIR . 'includes/class-kk-ajax.php';
 require_once KK_PLUGIN_DIR . 'includes/class-kk-stock.php';
+require_once KK_PLUGIN_DIR . 'includes/class-kk-conversion.php';
 require_once KK_PLUGIN_DIR . 'includes/class-kk-admin-list.php';
 require_once KK_PLUGIN_DIR . 'includes/class-khabaram-kon.php';
 

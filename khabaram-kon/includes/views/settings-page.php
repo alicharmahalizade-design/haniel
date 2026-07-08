@@ -16,9 +16,10 @@ $tabs       = array(
 	'general' => __( 'عمومی', 'khabaram-kon' ),
 	'content' => __( 'محتوا', 'khabaram-kon' ),
 	'design'  => __( 'طراحی', 'khabaram-kon' ),
-	'sms'     => __( 'پیامک', 'khabaram-kon' ),
-	'link'    => __( 'لینک کوتاه', 'khabaram-kon' ),
-	'advanced'=> __( 'پیشرفته', 'khabaram-kon' ),
+	'sms'        => __( 'پیامک', 'khabaram-kon' ),
+	'link'       => __( 'لینک کوتاه', 'khabaram-kon' ),
+	'conversion' => __( 'گزارش تبدیل', 'khabaram-kon' ),
+	'advanced'   => __( 'پیشرفته', 'khabaram-kon' ),
 );
 ?>
 <div class="wrap kk-wrap" dir="rtl">
@@ -182,7 +183,17 @@ $tabs       = array(
 				<tr>
 					<th><label for="kk_sms_pattern"><?php esc_html_e( 'کد پترن / الگو', 'khabaram-kon' ); ?></label></th>
 					<td><input type="text" id="kk_sms_pattern" name="kk_settings[sms_pattern]" value="<?php echo esc_attr( $s['sms_pattern'] ); ?>" class="regular-text">
-						<p class="description"><?php esc_html_e( 'اختیاری. برای ارسال پترن‌دار (کاوه‌نگار/اس‌ام‌اس‌آی‌آر). متغیرها به‌ترتیب product و shortlink ارسال می‌شوند.', 'khabaram-kon' ); ?></p></td>
+						<p class="description"><?php esc_html_e( 'اختیاری. کد پترن/الگو برای ارسال پترن‌دار. اگر خالی باشد، پیامک با متن آزاد ارسال می‌شود.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr class="kk-pattern-var">
+					<th><label for="kk_pattern_var_product"><?php esc_html_e( 'نام متغیر «محصول» در پترن', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_pattern_var_product" name="kk_settings[pattern_var_product]" value="<?php echo esc_attr( $s['pattern_var_product'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'برای فراز اس‌ام‌اس/ایران‌پیامک: نام دقیق متغیری که در پترن برای نام محصول تعریف کرده‌اید (مثلاً product).', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr class="kk-pattern-var">
+					<th><label for="kk_pattern_var_link"><?php esc_html_e( 'نام متغیر «لینک» در پترن', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_pattern_var_link" name="kk_settings[pattern_var_link]" value="<?php echo esc_attr( $s['pattern_var_link'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'نام دقیق متغیر لینک کوتاه در پترن (مثلاً link). لینک کوتاه در این متغیر قرار می‌گیرد.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr>
 					<th><label for="kk_sms_message"><?php esc_html_e( 'متن پیامک', 'khabaram-kon' ); ?></label></th>
@@ -220,6 +231,36 @@ $tabs       = array(
 					</td>
 				</tr>
 			</table>
+		</div>
+
+		<?php // ------------- گزارش تبدیل ------------- ?>
+		<div class="kk-tab-panel" data-tab="conversion" style="<?php echo 'conversion' === $active_tab ? '' : 'display:none'; ?>">
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><?php esc_html_e( 'فعال‌سازی گزارش تبدیل', 'khabaram-kon' ); ?></th>
+					<td><label class="kk-switch"><input type="checkbox" name="kk_settings[conversion_enabled]" value="yes" <?php checked( $s['conversion_enabled'], 'yes' ); ?>><span></span></label>
+						<p class="description"><?php esc_html_e( 'با UTM روی لینک کوتاه و تطبیق شماره خریدار با سفارش‌ها، تعداد و مبلغ خریدهای انجام‌شده پس از پیامک محاسبه می‌شود.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_utm_source"><?php esc_html_e( 'UTM Source', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_utm_source" name="kk_settings[utm_source]" value="<?php echo esc_attr( $s['utm_source'] ); ?>" class="regular-text" dir="ltr"></td>
+				</tr>
+				<tr>
+					<th><label for="kk_utm_medium"><?php esc_html_e( 'UTM Medium', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_utm_medium" name="kk_settings[utm_medium]" value="<?php echo esc_attr( $s['utm_medium'] ); ?>" class="regular-text" dir="ltr"></td>
+				</tr>
+				<tr>
+					<th><label for="kk_utm_campaign"><?php esc_html_e( 'UTM Campaign', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_utm_campaign" name="kk_settings[utm_campaign]" value="<?php echo esc_attr( $s['utm_campaign'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'این پارامترها به لینک محصول اضافه می‌شوند تا در گوگل آنالیتیکس هم قابل ردیابی باشند.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+				<tr>
+					<th><label for="kk_attr_window"><?php esc_html_e( 'بازه نسبت‌دهی (روز)', 'khabaram-kon' ); ?></label></th>
+					<td><input type="number" id="kk_attr_window" name="kk_settings[attribution_window_days]" value="<?php echo esc_attr( $s['attribution_window_days'] ); ?>" class="small-text" min="1" max="90">
+						<p class="description"><?php esc_html_e( 'اگر خرید ظرف این تعداد روز پس از ارسال پیامک انجام شود، به‌عنوان تبدیل ثبت می‌شود.', 'khabaram-kon' ); ?></p></td>
+				</tr>
+			</table>
+			<p class="description"><?php esc_html_e( 'آمار کامل تبدیل و درآمد را در صفحه «درخواست‌ها» می‌بینید.', 'khabaram-kon' ); ?></p>
 		</div>
 
 		<?php // ------------- پیشرفته ------------- ?>

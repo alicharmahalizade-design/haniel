@@ -36,6 +36,7 @@ class KK_Admin_List extends WP_List_Table {
 			'product'     => __( 'محصول', 'khabaram-kon' ),
 			'phone'       => __( 'شماره موبایل', 'khabaram-kon' ),
 			'status'      => __( 'وضعیت', 'khabaram-kon' ),
+			'conversion'  => __( 'تبدیل به خرید', 'khabaram-kon' ),
 			'created_at'  => __( 'تاریخ ثبت', 'khabaram-kon' ),
 			'notified_at' => __( 'تاریخ ارسال', 'khabaram-kon' ),
 		);
@@ -112,6 +113,30 @@ class KK_Admin_List extends WP_List_Table {
 		}
 		$edit = get_edit_post_link( $item->product_id );
 		return $edit ? '<a href="' . esc_url( $edit ) . '">' . esc_html( wp_strip_all_tags( $name ) ) . '</a>' : esc_html( wp_strip_all_tags( $name ) );
+	}
+
+	/**
+	 * ستون تبدیل به خرید.
+	 *
+	 * @param object $item ردیف.
+	 * @return string
+	 */
+	protected function column_conversion( $item ) {
+		if ( ! empty( $item->converted_at ) && '0000-00-00 00:00:00' !== $item->converted_at ) {
+			$html  = '<span class="kk-badge" style="background:#7c3aed">' . esc_html__( '🛒 خرید کرد', 'khabaram-kon' ) . '</span>';
+			if ( (float) $item->revenue > 0 ) {
+				$html .= '<br><small>' . wp_kses_post( wc_price( $item->revenue ) ) . '</small>';
+			}
+			if ( $item->order_id ) {
+				$order_url = admin_url( 'post.php?post=' . (int) $item->order_id . '&action=edit' );
+				$html     .= ' <a href="' . esc_url( $order_url ) . '" title="' . esc_attr__( 'مشاهده سفارش', 'khabaram-kon' ) . '">#' . (int) $item->order_id . '</a>';
+			}
+			return $html;
+		}
+		if ( ! empty( $item->clicked_at ) && '0000-00-00 00:00:00' !== $item->clicked_at ) {
+			return '<span class="kk-badge" style="background:#0891b2">' . esc_html__( '👆 کلیک کرد', 'khabaram-kon' ) . '</span>';
+		}
+		return '—';
 	}
 
 	/**
@@ -224,10 +249,13 @@ class KK_Admin_List extends WP_List_Table {
 
 		global $wpdb;
 		$table   = $wpdb->prefix . KK_TABLE;
-		$total   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB
-		$pending = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE status IN ('pending','queued')" ); // phpcs:ignore WordPress.DB
-		$sent    = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE status = 'notified'" ); // phpcs:ignore WordPress.DB
-		$clicks  = (int) get_option( 'kk_shortlink_clicks', 0 );
+		$total     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB
+		$pending   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE status IN ('pending','queued')" ); // phpcs:ignore WordPress.DB
+		$sent      = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE status = 'notified'" ); // phpcs:ignore WordPress.DB
+		$converted = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE converted_at IS NOT NULL" ); // phpcs:ignore WordPress.DB
+		$revenue   = (float) $wpdb->get_var( "SELECT COALESCE(SUM(revenue),0) FROM {$table} WHERE converted_at IS NOT NULL" ); // phpcs:ignore WordPress.DB
+		$clicks    = (int) get_option( 'kk_shortlink_clicks', 0 );
+		$rate      = $sent > 0 ? round( $converted / $sent * 100, 1 ) : 0;
 		?>
 		<div class="wrap kk-wrap" dir="rtl">
 			<h1 class="kk-title"><span class="dashicons dashicons-list-view"></span> <?php esc_html_e( 'درخواست‌های خبرم کن', 'khabaram-kon' ); ?></h1>
@@ -237,6 +265,8 @@ class KK_Admin_List extends WP_List_Table {
 				<div class="kk-stat"><span class="kk-stat-num"><?php echo esc_html( number_format_i18n( $pending ) ); ?></span><span class="kk-stat-label"><?php esc_html_e( 'در انتظار', 'khabaram-kon' ); ?></span></div>
 				<div class="kk-stat"><span class="kk-stat-num"><?php echo esc_html( number_format_i18n( $sent ) ); ?></span><span class="kk-stat-label"><?php esc_html_e( 'ارسال‌شده', 'khabaram-kon' ); ?></span></div>
 				<div class="kk-stat"><span class="kk-stat-num"><?php echo esc_html( number_format_i18n( $clicks ) ); ?></span><span class="kk-stat-label"><?php esc_html_e( 'کلیک لینک کوتاه', 'khabaram-kon' ); ?></span></div>
+				<div class="kk-stat kk-stat-accent"><span class="kk-stat-num"><?php echo esc_html( number_format_i18n( $converted ) ); ?> <small>(<?php echo esc_html( $rate ); ?>%)</small></span><span class="kk-stat-label"><?php esc_html_e( 'تبدیل به خرید', 'khabaram-kon' ); ?></span></div>
+				<div class="kk-stat kk-stat-accent"><span class="kk-stat-num"><?php echo wp_kses_post( wc_price( $revenue ) ); ?></span><span class="kk-stat-label"><?php esc_html_e( 'درآمد منتسب', 'khabaram-kon' ); ?></span></div>
 			</div>
 
 			<form method="get">

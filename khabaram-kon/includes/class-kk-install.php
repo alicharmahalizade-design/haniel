@@ -53,12 +53,18 @@ class KK_Install {
 			token VARCHAR(32) NOT NULL DEFAULT '',
 			created_at DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 			notified_at DATETIME NULL DEFAULT NULL,
+			clicked_at DATETIME NULL DEFAULT NULL,
+			order_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+			revenue DECIMAL(18,2) NOT NULL DEFAULT 0,
+			converted_at DATETIME NULL DEFAULT NULL,
 			PRIMARY KEY  (id),
 			KEY product_id (product_id),
 			KEY variation_id (variation_id),
 			KEY status (status),
 			KEY phone (phone),
-			KEY token (token)
+			KEY token (token),
+			KEY order_id (order_id),
+			KEY converted_at (converted_at)
 		) {$charset_collate};";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

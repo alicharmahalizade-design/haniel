@@ -41,6 +41,7 @@ final class Khabaram_Kon {
 		KK_Frontend::init();
 		KK_Ajax::init();
 		KK_Stock::init();
+		KK_Conversion::init();
 	}
 
 	/**

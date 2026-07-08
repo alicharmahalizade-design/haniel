@@ -95,11 +95,19 @@
 	text-align: center;
 	box-shadow: 0 1px 2px rgba(0,0,0,.04);
 }
+.kk-stat-accent {
+	background: linear-gradient(135deg, #eef2ff, #faf5ff);
+	border-color: #ddd6fe;
+}
 .kk-stat-num {
 	display: block;
-	font-size: 28px;
+	font-size: 26px;
 	font-weight: 800;
 	color: #111827;
+}
+.kk-stat-num small {
+	font-size: 15px;
+	color: #7c3aed;
 }
 .kk-stat-label {
 	display: block;

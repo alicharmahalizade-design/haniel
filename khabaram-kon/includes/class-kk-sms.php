@@ -18,6 +18,7 @@ class KK_SMS {
 	 */
 	public static function gateways() {
 		return array(
+			'farazsms'    => array( 'label' => 'فراز اس‌ام‌اس / ایران‌پیامک (IPPanel)' ),
 			'kavenegar'   => array( 'label' => 'کاوه‌نگار (Kavenegar)' ),
 			'melipayamak' => array( 'label' => 'ملی پیامک (Melipayamak)' ),
 			'smsir'       => array( 'label' => 'اس‌ام‌اس‌آی‌آر (SMS.ir)' ),
@@ -43,6 +44,8 @@ class KK_SMS {
 		$gateway = KK_Settings::get( 'sms_gateway', 'kavenegar' );
 
 		switch ( $gateway ) {
+			case 'farazsms':
+				return self::send_farazsms( $phone, $message, $params );
 			case 'kavenegar':
 				return self::send_kavenegar( $phone, $message, $params );
 			case 'melipayamak':
@@ -56,6 +59,85 @@ class KK_SMS {
 			default:
 				return new WP_Error( 'kk_no_gateway', __( 'درگاه پیامک نامعتبر است.', 'khabaram-kon' ) );
 		}
+	}
+
+	/**
+	 * فراز اس‌ام‌اس / ایران‌پیامک (IPPanel REST v1).
+	 *
+	 * @param string $phone   شماره.
+	 * @param string $message متن.
+	 * @param array  $params  متغیرها.
+	 * @return true|WP_Error
+	 */
+	private static function send_farazsms( $phone, $message, $params ) {
+		$api     = KK_Settings::get( 'sms_api_key' );
+		$sender  = KK_Settings::get( 'sms_sender' );
+		$pattern = KK_Settings::get( 'sms_pattern' );
+
+		if ( empty( $api ) ) {
+			return new WP_Error( 'kk_no_api', __( 'کلید API (apikey) فراز اس‌ام‌اس/ایران‌پیامک تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		if ( empty( $sender ) ) {
+			return new WP_Error( 'kk_no_sender', __( 'شماره خط فرستنده فراز اس‌ام‌اس تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+
+		$base = 'https://api2.ippanel.com/api/v1';
+
+		if ( ! empty( $pattern ) ) {
+			// نام متغیرهای پترن (پیش‌فرض product و link).
+			$var_product = KK_Settings::get( 'pattern_var_product', 'product' );
+			$var_link    = KK_Settings::get( 'pattern_var_link', 'link' );
+
+			$url  = $base . '/sms/pattern/normal/send';
+			$body = wp_json_encode(
+				array(
+					'code'      => $pattern,
+					'sender'    => $sender,
+					'recipient' => $phone,
+					'variable'  => array(
+						$var_product => isset( $params['product'] ) ? self::pattern_safe( $params['product'] ) : '',
+						$var_link    => isset( $params['shortlink'] ) ? self::pattern_safe( $params['shortlink'] ) : '',
+					),
+				)
+			);
+		} else {
+			$url  = $base . '/sms/send/webservice/single';
+			$body = wp_json_encode(
+				array(
+					'sender'    => $sender,
+					'recipient' => array( $phone ),
+					'message'   => $message,
+				)
+			);
+		}
+
+		$res = wp_remote_post(
+			$url,
+			array(
+				'timeout' => 25,
+				'headers' => array(
+					'apikey'       => $api,
+					'Content-Type' => 'application/json',
+					'Accept'       => 'application/json',
+				),
+				'body'    => $body,
+			)
+		);
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+
+		$code = wp_remote_retrieve_response_code( $res );
+		$data = json_decode( wp_remote_retrieve_body( $res ), true );
+
+		if ( $code >= 200 && $code < 300 ) {
+			// برخی پاسخ‌ها فیلد status متنی دارند؛ اگر خطا بود گزارش کن.
+			if ( isset( $data['status'] ) && is_string( $data['status'] ) && 'OK' !== strtoupper( $data['status'] ) ) {
+				return new WP_Error( 'kk_sms_failed', self::extract_error( $data ) );
+			}
+			return true;
+		}
+		return new WP_Error( 'kk_sms_failed', self::extract_error( $data ) );
 	}
 
 	/**
@@ -305,7 +387,11 @@ class KK_SMS {
 	 */
 	private static function extract_error( $data ) {
 		if ( is_array( $data ) ) {
-			foreach ( array( 'message', 'Message', 'StrRetStatus', 'return' ) as $k ) {
+			// خطای IPPanel/فراز اس‌ام‌اس معمولاً در meta.message یا error_message است.
+			if ( isset( $data['meta']['message'] ) && ! empty( $data['meta']['message'] ) ) {
+				return (string) $data['meta']['message'];
+			}
+			foreach ( array( 'message', 'Message', 'error_message', 'StrRetStatus', 'return' ) as $k ) {
 				if ( ! empty( $data[ $k ] ) ) {
 					return is_array( $data[ $k ] ) && isset( $data[ $k ]['message'] ) ? (string) $data[ $k ]['message'] : (string) ( is_scalar( $data[ $k ] ) ? $data[ $k ] : wp_json_encode( $data[ $k ] ) );
 				}

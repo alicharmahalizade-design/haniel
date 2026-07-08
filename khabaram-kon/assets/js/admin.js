@@ -29,6 +29,16 @@
 		} ).on( 'mouseleave', updatePreview );
 		updatePreview();
 
+		// نمایش/مخفی کردن فیلد نام متغیرهای پترن بسته به داشتن کد پترن
+		function togglePatternVars() {
+			var hasPattern = $.trim( $( '#kk_sms_pattern' ).val() ) !== '';
+			$( '.kk-pattern-var' ).toggle( hasPattern );
+		}
+		if ( $( '#kk_sms_pattern' ).length ) {
+			togglePatternVars();
+			$( '#kk_sms_pattern' ).on( 'input', togglePatternVars );
+		}
+
 		// ارسال پیامک آزمایشی
 		$( '#kk-test-sms' ).on( 'click', function () {
 			var $btn = $( this );

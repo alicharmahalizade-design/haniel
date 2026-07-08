@@ -54,7 +54,7 @@ class KK_Shortlink {
 
 		global $wpdb;
 		$table = $wpdb->prefix . KK_TABLE;
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT product_id, variation_id FROM {$table} WHERE token = %s LIMIT 1", $token ) ); // phpcs:ignore WordPress.DB
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT id, product_id, variation_id, clicked_at FROM {$table} WHERE token = %s LIMIT 1", $token ) ); // phpcs:ignore WordPress.DB
 
 		if ( ! $row ) {
 			wp_safe_redirect( home_url( '/' ) );
@@ -63,7 +63,16 @@ class KK_Shortlink {
 
 		$target = self::product_url( (int) $row->product_id, (int) $row->variation_id );
 
-		// شمارش کلیک (اختیاری، برای گزارش‌گیری).
+		// افزودن UTM و ثبت کوکی نسبت‌دهی برای گزارش تبدیل.
+		$target = KK_Conversion::add_utm( $target );
+		KK_Conversion::set_click_cookie( $token );
+
+		// ثبت اولین کلیک روی این درخواست.
+		if ( empty( $row->clicked_at ) || '0000-00-00 00:00:00' === $row->clicked_at ) {
+			$wpdb->update( $table, array( 'clicked_at' => current_time( 'mysql' ) ), array( 'id' => $row->id ) ); // phpcs:ignore WordPress.DB
+		}
+
+		// شمارش کلیک کل (برای گزارش‌گیری سریع).
 		$clicks = (int) get_option( 'kk_shortlink_clicks', 0 );
 		update_option( 'kk_shortlink_clicks', $clicks + 1, false );
 
