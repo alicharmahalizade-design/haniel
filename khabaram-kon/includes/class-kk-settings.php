@@ -207,7 +207,7 @@ class KK_Settings {
 		$input    = is_array( $input ) ? $input : array();
 
 		$yes_no      = array( 'enabled', 'enable_simple', 'enable_variable', 'hide_add_to_cart', 'button_icon', 'btn_full_width', 'shortlink_enabled', 'store_user_phone', 'delete_on_uninstall', 'conversion_enabled', 'demand_alert_enabled' );
-		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'button_position', 'pattern_var_product', 'pattern_var_link', 'utm_source', 'utm_medium', 'utm_campaign', 'demand_alert_sms_phone', 'telegram_bot_token', 'telegram_chat_id' );
+		$text_fields = array( 'button_text', 'phone_label', 'phone_placeholder', 'submit_text', 'form_title', 'sms_sender', 'sms_pattern', 'shortlink_slug', 'sms_username', 'pattern_var_product', 'pattern_var_link', 'utm_source', 'utm_medium', 'utm_campaign', 'demand_alert_sms_phone', 'telegram_bot_token', 'telegram_chat_id' );
 		$area_fields = array( 'form_desc', 'success_message', 'already_message', 'privacy_note', 'sms_message' );
 		$color_fields = array( 'btn_bg', 'btn_color', 'btn_bg_hover', 'accent_color' );
 
@@ -234,6 +234,10 @@ class KK_Settings {
 				$allowed        = array_keys( KK_SMS::gateways() );
 				$val            = isset( $input[ $key ] ) ? sanitize_key( $input[ $key ] ) : $default;
 				$output[ $key ] = in_array( $val, $allowed, true ) ? $val : $default;
+			} elseif ( 'button_position' === $key ) {
+				$val            = isset( $input[ $key ] ) ? sanitize_text_field( wp_unslash( $input[ $key ] ) ) : $default;
+				$allowed_pos    = array_keys( KK_Frontend::positions() );
+				$output[ $key ] = in_array( $val, $allowed_pos, true ) ? $val : $default;
 			} elseif ( 'form_style' === $key ) {
 				$val            = isset( $input[ $key ] ) ? sanitize_key( $input[ $key ] ) : $default;
 				$output[ $key ] = in_array( $val, array( 'popup', 'inline' ), true ) ? $val : $default;

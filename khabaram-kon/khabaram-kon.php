@@ -3,7 +3,7 @@
  * Plugin Name:       خبرم کن
  * Plugin URI:        https://haniel.example/khabaram-kon
  * Description:       نمایش دکمه «خبرم کن» روی محصولات ناموجود ووکامرس (ساده و متغیر). کاربر شماره‌اش را ثبت می‌کند و به‌محض موجود شدن محصول، پیامک همراه با لینک کوتاه دریافت می‌کند.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Author:            Haniel
  * Author URI:        https://haniel.example
  * Text Domain:       khabaram-kon
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // جلوگیری از دسترسی مستقیم
 }
 
-define( 'KK_VERSION', '1.4.0' );
+define( 'KK_VERSION', '1.5.0' );
 define( 'KK_PLUGIN_FILE', __FILE__ );
 define( 'KK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

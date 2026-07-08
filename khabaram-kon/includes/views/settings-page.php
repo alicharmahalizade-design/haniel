@@ -63,9 +63,21 @@ $tabs       = array(
 						<p class="description"><?php esc_html_e( 'اگر محصول ناموجود است دکمه افزودن به سبد مخفی شود.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr>
+					<th><label for="kk_button_position"><?php esc_html_e( 'محل نمایش دکمه', 'khabaram-kon' ); ?></label></th>
+					<td>
+						<select id="kk_button_position" name="kk_settings[button_position]">
+							<?php foreach ( KK_Frontend::positions() as $pos_key => $pos_label ) : ?>
+								<option value="<?php echo esc_attr( $pos_key ); ?>" <?php selected( $s['button_position'], $pos_key ); ?>><?php echo esc_html( $pos_label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description"><?php esc_html_e( 'اگر قالب شما محل «ناموجود» را جای دیگری نشان می‌دهد، حالت «فقط با شورت‌کد» را انتخاب کنید و شورت‌کد زیر را همان‌جا بگذارید.', 'khabaram-kon' ); ?></p>
+						<p class="description"><?php esc_html_e( 'شورت‌کد:', 'khabaram-kon' ); ?> <code>[khabaram_kon]</code></p>
+					</td>
+				</tr>
+				<tr>
 					<th><label for="kk_button_priority"><?php esc_html_e( 'اولویت نمایش', 'khabaram-kon' ); ?></label></th>
 					<td><input type="number" id="kk_button_priority" name="kk_settings[button_priority]" value="<?php echo esc_attr( $s['button_priority'] ); ?>" class="small-text">
-						<p class="description"><?php esc_html_e( 'محل قرارگیری دکمه در صفحه محصول (عدد کوچک‌تر = بالاتر). پیش‌فرض ۳۱.', 'khabaram-kon' ); ?></p></td>
+						<p class="description"><?php esc_html_e( 'ترتیب قرارگیری در همان محل انتخاب‌شده (عدد کوچک‌تر = بالاتر). پیش‌فرض ۳۱.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 			</table>
 		</div>
