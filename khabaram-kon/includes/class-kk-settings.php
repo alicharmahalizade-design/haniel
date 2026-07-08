@@ -217,11 +217,15 @@ class KK_Settings {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( wp_unslash( $input[ $key ] ) ) : $default;
 			} elseif ( in_array( $key, $color_fields, true ) ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_hex_color( $input[ $key ] ) : $default;
+			} elseif ( 'sms_sender' === $key || 'sms_pattern' === $key || 'demand_alert_sms_phone' === $key || 'sms_api_key' === $key ) {
+				// فیلدهای باید-ASCII: ارقام فارسی/عربی به لاتین تبدیل شوند.
+				$val            = isset( $input[ $key ] ) ? sanitize_text_field( wp_unslash( $input[ $key ] ) ) : $default;
+				$output[ $key ] = KK_SMS::en_digits( $val );
 			} elseif ( in_array( $key, $text_fields, true ) ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( wp_unslash( $input[ $key ] ) ) : $default;
 			} elseif ( 'btn_radius' === $key || 'button_priority' === $key || 'attribution_window_days' === $key || 'demand_threshold' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? absint( $input[ $key ] ) : $default;
-			} elseif ( 'sms_api_key' === $key || 'sms_password' === $key ) {
+			} elseif ( 'sms_password' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? trim( sanitize_text_field( wp_unslash( $input[ $key ] ) ) ) : $default;
 			} elseif ( 'notify_admin_email' === $key || 'demand_alert_email' === $key ) {
 				$output[ $key ] = isset( $input[ $key ] ) ? sanitize_email( $input[ $key ] ) : $default;

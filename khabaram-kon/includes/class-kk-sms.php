@@ -93,6 +93,51 @@ class KK_SMS {
 	}
 
 	/**
+	 * تبدیل ارقام فارسی/عربی به لاتین و حذف فاصله‌های اضافی.
+	 * برای فیلدهایی مثل کلید API و شماره فرستنده که باید ASCII باشند.
+	 *
+	 * @param string $str ورودی.
+	 * @return string
+	 */
+	public static function en_digits( $str ) {
+		$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' );
+		$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+		return trim( str_replace( $fa, $en, (string) $str ) );
+	}
+
+	/**
+	 * ساخت پیام خطای دقیق شامل کد HTTP و بخشی از پاسخ خام درگاه.
+	 *
+	 * @param array $res پاسخ wp_remote_*.
+	 * @return WP_Error
+	 */
+	private static function response_error( $res ) {
+		$code = wp_remote_retrieve_response_code( $res );
+		$body = wp_remote_retrieve_body( $res );
+		$data = json_decode( $body, true );
+
+		$msg = self::extract_error( $data );
+		// اگر پیام قابل‌فهمی پیدا نشد، بخشی از پاسخ خام را نشان بده.
+		if ( __( 'ارسال پیامک ناموفق بود. پاسخ درگاه نامشخص است.', 'khabaram-kon' ) === $msg ) {
+			$snippet = trim( wp_strip_all_tags( (string) $body ) );
+			if ( function_exists( 'mb_substr' ) && mb_strlen( $snippet ) > 220 ) {
+				$snippet = mb_substr( $snippet, 0, 220 ) . '…';
+			}
+			$msg = '' !== $snippet ? $snippet : $msg;
+		}
+
+		return new WP_Error(
+			'kk_sms_failed',
+			sprintf(
+				/* translators: 1: HTTP status code, 2: gateway message */
+				__( 'خطای درگاه (کد HTTP %1$s): %2$s', 'khabaram-kon' ),
+				$code ? $code : '—',
+				$msg
+			)
+		);
+	}
+
+	/**
 	 * فراز اس‌ام‌اس / ایران‌پیامک (IPPanel REST v1).
 	 *
 	 * @param string $phone   شماره.
@@ -101,9 +146,9 @@ class KK_SMS {
 	 * @return true|WP_Error
 	 */
 	private static function send_farazsms( $phone, $message, $params ) {
-		$api     = KK_Settings::get( 'sms_api_key' );
-		$sender  = KK_Settings::get( 'sms_sender' );
-		$pattern = KK_Settings::get( 'sms_pattern' );
+		$api     = self::en_digits( KK_Settings::get( 'sms_api_key' ) );
+		$sender  = self::en_digits( KK_Settings::get( 'sms_sender' ) );
+		$pattern = self::en_digits( KK_Settings::get( 'sms_pattern' ) );
 
 		if ( empty( $api ) ) {
 			return new WP_Error( 'kk_no_api', __( 'کلید API (apikey) فراز اس‌ام‌اس/ایران‌پیامک تنظیم نشده است.', 'khabaram-kon' ) );
@@ -164,11 +209,11 @@ class KK_SMS {
 		if ( $code >= 200 && $code < 300 ) {
 			// برخی پاسخ‌ها فیلد status متنی دارند؛ اگر خطا بود گزارش کن.
 			if ( isset( $data['status'] ) && is_string( $data['status'] ) && 'OK' !== strtoupper( $data['status'] ) ) {
-				return new WP_Error( 'kk_sms_failed', self::extract_error( $data ) );
+				return self::response_error( $res );
 			}
 			return true;
 		}
-		return new WP_Error( 'kk_sms_failed', self::extract_error( $data ) );
+		return self::response_error( $res );
 	}
 
 	/**
@@ -422,7 +467,7 @@ class KK_SMS {
 			if ( isset( $data['meta']['message'] ) && ! empty( $data['meta']['message'] ) ) {
 				return (string) $data['meta']['message'];
 			}
-			foreach ( array( 'message', 'Message', 'error_message', 'StrRetStatus', 'return' ) as $k ) {
+			foreach ( array( 'message', 'Message', 'error_message', 'errorMessage', 'error', 'detail', 'StrRetStatus', 'return' ) as $k ) {
 				if ( ! empty( $data[ $k ] ) ) {
 					return is_array( $data[ $k ] ) && isset( $data[ $k ]['message'] ) ? (string) $data[ $k ]['message'] : (string) ( is_scalar( $data[ $k ] ) ? $data[ $k ] : wp_json_encode( $data[ $k ] ) );
 				}
@@ -468,7 +513,7 @@ class KK_SMS {
 	 * @return array|WP_Error
 	 */
 	private static function credit_farazsms() {
-		$api = KK_Settings::get( 'sms_api_key' );
+		$api = self::en_digits( KK_Settings::get( 'sms_api_key' ) );
 		if ( empty( $api ) ) {
 			return new WP_Error( 'kk_no_api', __( 'کلید API (apikey) تنظیم نشده است.', 'khabaram-kon' ) );
 		}
@@ -494,7 +539,7 @@ class KK_SMS {
 			$credit = $data['data'];
 		}
 		if ( null === $credit ) {
-			return new WP_Error( 'kk_credit_failed', self::extract_error( $data ) );
+			return self::response_error( $res );
 		}
 		return array( 'credit' => (float) $credit, 'unit' => __( 'ریال', 'khabaram-kon' ) );
 	}
