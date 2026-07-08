@@ -126,6 +126,12 @@ class KK_SMS {
 			$msg = '' !== $snippet ? $snippet : $msg;
 		}
 
+		// راهنمای عملی برای خطاهای احراز هویت/دسترسی.
+		$hint = '';
+		if ( in_array( (int) $code, array( 401, 403 ), true ) || false !== stripos( (string) $msg, 'PERMISSION_DENIED' ) || false !== stripos( (string) $msg, 'api key' ) ) {
+			$hint = ' — ' . __( 'کلید API یا دسترسی وب‌سرویس رد شد. بررسی کنید: ۱) کلید API را درست از پنل کپی کرده باشید ۲) دسترسی «وب‌سرویس/API» در پنل فعال باشد ۳) اگر محدودیت IP دارید، IP سرور سایت را در پنل مجاز کنید ۴) خط ارسال به این کلید متصل باشد.', 'khabaram-kon' );
+		}
+
 		return new WP_Error(
 			'kk_sms_failed',
 			sprintf(
@@ -133,7 +139,7 @@ class KK_SMS {
 				__( 'خطای درگاه (کد HTTP %1$s): %2$s', 'khabaram-kon' ),
 				$code ? $code : '—',
 				$msg
-			)
+			) . $hint
 		);
 	}
 
@@ -192,7 +198,7 @@ class KK_SMS {
 			array(
 				'timeout' => 25,
 				'headers' => array(
-					'apikey'       => $api,
+					'Apikey'       => $api,
 					'Content-Type' => 'application/json',
 					'Accept'       => 'application/json',
 				),
@@ -522,7 +528,7 @@ class KK_SMS {
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'apikey' => $api,
+					'Apikey' => $api,
 					'Accept' => 'application/json',
 				),
 			)

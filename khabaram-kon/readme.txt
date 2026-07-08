@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.2.2 =
+* هماهنگی نام هدر احراز هویت فراز اس‌ام‌اس با SDK رسمی (Apikey).
+* افزودن راهنمای عملی هنگام خطای 401/403/PERMISSION_DENIED (کلید API، فعال‌سازی وب‌سرویس، محدودیت IP، اتصال خط).
 
 = 1.2.1 =
 * رفع مشکل ارسال فراز اس‌ام‌اس با تبدیل خودکار ارقام فارسی/عربی به لاتین در شماره فرستنده، کلید API، کد پترن و شماره مدیر.
