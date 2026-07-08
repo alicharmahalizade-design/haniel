@@ -12,10 +12,14 @@
 	justify-content: center;
 	gap: 8px;
 	width: var(--kk-width, 100%);
-	padding: 13px 22px;
+	max-width: 100%;
+	min-height: 46px;
+	box-sizing: border-box;
+	padding: 12px 20px;
 	font-size: 15px;
 	font-weight: 700;
-	line-height: 1;
+	line-height: 1.25;
+	white-space: nowrap;
 	color: var(--kk-color, #fff);
 	background: var(--kk-bg, #111827);
 	border: none;
@@ -24,6 +28,18 @@
 	transition: background .2s ease, transform .1s ease, box-shadow .2s ease;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
 	font-family: inherit;
+}
+.kk-button-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* در فضای باریک قالب، دکمه تک‌خطی و جمع‌وجور بماند */
+@media (max-width: 480px) {
+	.kk-button {
+		padding: 11px 14px;
+		font-size: 14px;
+		gap: 6px;
+	}
 }
 .kk-button:hover {
 	background: var(--kk-bg-hover, #374151);

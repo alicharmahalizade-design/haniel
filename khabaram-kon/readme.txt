@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.5.1 =
+* بهبود ظاهر دکمه در فضاهای باریک قالب (تک‌خطی ماندن متن، حداقل ارتفاع، ریسپانسیو موبایل) تا به‌شکل مربع/چندخطی درنیاید.
 
 = 1.5.0 =
 * افزودن انتخاب «محل نمایش دکمه» با چند موقعیت آماده در صفحه محصول و حالت «فقط با شورت‌کد».
