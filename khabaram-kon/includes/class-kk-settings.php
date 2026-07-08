@@ -54,6 +54,7 @@ class KK_Settings {
 			'btn_radius'           => 10,
 			'btn_full_width'       => 'yes',
 			'accent_color'         => '#2563eb',
+			'form_style'           => 'popup',
 
 			// پیامک.
 			'sms_gateway'          => 'iranpayamak',
@@ -233,6 +234,9 @@ class KK_Settings {
 				$allowed        = array_keys( KK_SMS::gateways() );
 				$val            = isset( $input[ $key ] ) ? sanitize_key( $input[ $key ] ) : $default;
 				$output[ $key ] = in_array( $val, $allowed, true ) ? $val : $default;
+			} elseif ( 'form_style' === $key ) {
+				$val            = isset( $input[ $key ] ) ? sanitize_key( $input[ $key ] ) : $default;
+				$output[ $key ] = in_array( $val, array( 'popup', 'inline' ), true ) ? $val : $default;
 			} elseif ( 'shortlink_provider' === $key ) {
 				$val            = isset( $input[ $key ] ) ? sanitize_key( $input[ $key ] ) : $default;
 				$output[ $key ] = in_array( $val, array( 'internal', 'none' ), true ) ? $val : $default;

@@ -16,19 +16,49 @@
 
 	$( function () {
 
-		// باز/بسته کردن فرم
-		$( document ).on( 'click', '.kk-button', function () {
-			var $wrap = $( this ).closest( '.kk-wrapper' );
+		function openForm( $wrap ) {
 			var $form = $wrap.find( '.kk-form' );
 			$form.prop( 'hidden', false );
-			$( this ).hide();
+			$wrap.find( '.kk-button' ).hide();
+			if ( $wrap.hasClass( 'kk-style-popup' ) ) {
+				$( 'html' ).addClass( 'kk-modal-open' );
+			}
 			$form.find( '.kk-phone' ).trigger( 'focus' );
-		} );
+		}
 
-		$( document ).on( 'click', '.kk-close', function () {
-			var $wrap = $( this ).closest( '.kk-wrapper' );
+		function closeForm( $wrap ) {
 			$wrap.find( '.kk-form' ).prop( 'hidden', true );
 			$wrap.find( '.kk-button' ).show();
+			$( 'html' ).removeClass( 'kk-modal-open' );
+		}
+
+		// باز کردن فرم
+		$( document ).on( 'click', '.kk-button', function () {
+			openForm( $( this ).closest( '.kk-wrapper' ) );
+		} );
+
+		// بستن با دکمه بستن
+		$( document ).on( 'click', '.kk-close', function () {
+			closeForm( $( this ).closest( '.kk-wrapper' ) );
+		} );
+
+		// بستن با کلیک روی پس‌زمینه پاپ‌آپ
+		$( document ).on( 'click', '.kk-style-popup .kk-form', function ( e ) {
+			if ( e.target === this ) {
+				closeForm( $( this ).closest( '.kk-wrapper' ) );
+			}
+		} );
+
+		// بستن با کلید Escape
+		$( document ).on( 'keydown', function ( e ) {
+			if ( e.key === 'Escape' ) {
+				var $open = $( '.kk-style-popup .kk-form' ).filter( function () {
+					return ! this.hidden;
+				} );
+				if ( $open.length ) {
+					closeForm( $open.closest( '.kk-wrapper' ) );
+				}
+			}
 		} );
 
 		// ثبت با Enter
@@ -105,6 +135,7 @@
 				$kkVar.find( '.kk-variation-id' ).val( 0 );
 				$kkVar.find( '.kk-message' ).removeClass( 'kk-ok kk-err' ).text( '' );
 				$kkVar.find( '.kk-field, .kk-submit, .kk-privacy' ).show();
+				$( 'html' ).removeClass( 'kk-modal-open' );
 			}
 		}
 	} );

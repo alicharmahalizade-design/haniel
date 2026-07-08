@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.4.0 =
+* افزودن حالت نمایش فرم به‌صورت پاپ‌آپ (مودال) هنگام کلیک روی دکمه، با پس‌زمینه تار، انیمیشن، بستن با کلیک بیرون و کلید Escape و قفل اسکرول.
+* گزینه انتخاب «پاپ‌آپ» یا «درون‌خطی» در تب طراحی (پیش‌فرض پاپ‌آپ).
 
 = 1.3.0 =
 * افزودن درگاه «فراز اس‌ام‌اس / ایران‌پیامک — نسخه جدید» با آدرس api.iranpayamak.com و هدر Api-Key (endpoint ارسال ساده /ws/v1/sms/simple).

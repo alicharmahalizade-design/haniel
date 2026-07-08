@@ -120,6 +120,16 @@ $tabs       = array(
 		<div class="kk-tab-panel" data-tab="design" style="<?php echo 'design' === $active_tab ? '' : 'display:none'; ?>">
 			<table class="form-table" role="presentation">
 				<tr>
+					<th><label for="kk_form_style"><?php esc_html_e( 'نحوه نمایش فرم', 'khabaram-kon' ); ?></label></th>
+					<td>
+						<select id="kk_form_style" name="kk_settings[form_style]">
+							<option value="popup" <?php selected( $s['form_style'], 'popup' ); ?>><?php esc_html_e( 'پاپ‌آپ (مودال وسط صفحه)', 'khabaram-kon' ); ?></option>
+							<option value="inline" <?php selected( $s['form_style'], 'inline' ); ?>><?php esc_html_e( 'درون‌خطی (زیر دکمه)', 'khabaram-kon' ); ?></option>
+						</select>
+						<p class="description"><?php esc_html_e( 'با کلیک روی دکمه، فرم به‌صورت پاپ‌آپ وسط صفحه باز شود یا زیر دکمه.', 'khabaram-kon' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th><label><?php esc_html_e( 'رنگ پس‌زمینه دکمه', 'khabaram-kon' ); ?></label></th>
 					<td><input type="text" name="kk_settings[btn_bg]" value="<?php echo esc_attr( $s['btn_bg'] ); ?>" class="kk-color"></td>
 				</tr>

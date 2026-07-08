@@ -80,6 +80,7 @@ class KK_Frontend {
 		$known_phone  = self::get_known_phone( $user );
 		// برای متغیر، به‌صورت پیش‌فرض مخفی است و با جاوااسکریپت نمایش داده می‌شود.
 		$wrapper_class = 'kk-wrapper';
+		$wrapper_class .= 'popup' === $s['form_style'] ? ' kk-style-popup' : ' kk-style-inline';
 		if ( $is_variable ) {
 			$wrapper_class .= ' kk-variable kk-hidden';
 		}
