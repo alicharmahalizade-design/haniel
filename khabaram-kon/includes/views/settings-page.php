@@ -166,7 +166,8 @@ $tabs       = array(
 				</tr>
 				<tr>
 					<th><label for="kk_sms_api_key"><?php esc_html_e( 'کلید API / توکن', 'khabaram-kon' ); ?></label></th>
-					<td><input type="text" id="kk_sms_api_key" name="kk_settings[sms_api_key]" value="<?php echo esc_attr( $s['sms_api_key'] ); ?>" class="regular-text" autocomplete="off"></td>
+					<td><input type="text" id="kk_sms_api_key" name="kk_settings[sms_api_key]" value="<?php echo esc_attr( $s['sms_api_key'] ); ?>" class="regular-text" autocomplete="off">
+						<p class="description"><?php esc_html_e( 'برای «فراز اس‌ام‌اس نسخه جدید» همان Api-Key پنل iranpayamak.com را وارد کنید.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr>
 					<th><label for="kk_sms_username"><?php esc_html_e( 'نام کاربری', 'khabaram-kon' ); ?></label></th>
@@ -178,8 +179,9 @@ $tabs       = array(
 					<td><input type="password" id="kk_sms_password" name="kk_settings[sms_password]" value="<?php echo esc_attr( $s['sms_password'] ); ?>" class="regular-text" autocomplete="off"></td>
 				</tr>
 				<tr>
-					<th><label for="kk_sms_sender"><?php esc_html_e( 'شماره فرستنده', 'khabaram-kon' ); ?></label></th>
-					<td><input type="text" id="kk_sms_sender" name="kk_settings[sms_sender]" value="<?php echo esc_attr( $s['sms_sender'] ); ?>" class="regular-text"></td>
+					<th><label for="kk_sms_sender"><?php esc_html_e( 'شماره فرستنده / خط ارسال', 'khabaram-kon' ); ?></label></th>
+					<td><input type="text" id="kk_sms_sender" name="kk_settings[sms_sender]" value="<?php echo esc_attr( $s['sms_sender'] ); ?>" class="regular-text" dir="ltr">
+						<p class="description"><?php esc_html_e( 'برای «فراز اس‌ام‌اس نسخه جدید» همان line_number خط شما (مثلاً 3000505).', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr>
 					<th><label for="kk_sms_pattern"><?php esc_html_e( 'کد پترن / الگو', 'khabaram-kon' ); ?></label></th>

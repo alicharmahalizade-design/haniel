@@ -25,7 +25,8 @@ class KK_SMS {
 	 */
 	public static function gateways() {
 		return array(
-			'farazsms'    => array( 'label' => 'فراز اس‌ام‌اس / ایران‌پیامک (IPPanel)' ),
+			'iranpayamak' => array( 'label' => 'فراز اس‌ام‌اس / ایران‌پیامک — نسخه جدید (api.iranpayamak.com)' ),
+			'farazsms'    => array( 'label' => 'ایران‌پیامک قدیمی / IPPanel (api2.ippanel.com)' ),
 			'kavenegar'   => array( 'label' => 'کاوه‌نگار (Kavenegar)' ),
 			'melipayamak' => array( 'label' => 'ملی پیامک (Melipayamak)' ),
 			'smsir'       => array( 'label' => 'اس‌ام‌اس‌آی‌آر (SMS.ir)' ),
@@ -51,6 +52,8 @@ class KK_SMS {
 		$gateway = KK_Settings::get( 'sms_gateway', 'kavenegar' );
 
 		switch ( $gateway ) {
+			case 'iranpayamak':
+				return self::send_iranpayamak( $phone, $message, $params );
 			case 'farazsms':
 				return self::send_farazsms( $phone, $message, $params );
 			case 'kavenegar':
@@ -141,6 +144,58 @@ class KK_SMS {
 				$msg
 			) . $hint
 		);
+	}
+
+	/**
+	 * فراز اس‌ام‌اس / ایران‌پیامک — نسخه جدید (api.iranpayamak.com، هدر Api-Key).
+	 *
+	 * @param string $phone   شماره.
+	 * @param string $message متن.
+	 * @param array  $params  متغیرها.
+	 * @return true|WP_Error
+	 */
+	private static function send_iranpayamak( $phone, $message, $params ) {
+		$api    = self::en_digits( KK_Settings::get( 'sms_api_key' ) );
+		$sender = self::en_digits( KK_Settings::get( 'sms_sender' ) );
+
+		if ( empty( $api ) ) {
+			return new WP_Error( 'kk_no_api', __( 'کلید API (Api-Key) فراز اس‌ام‌اس تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+		if ( empty( $sender ) ) {
+			return new WP_Error( 'kk_no_sender', __( 'شماره خط (line_number) فرستنده تنظیم نشده است.', 'khabaram-kon' ) );
+		}
+
+		$url  = 'https://api.iranpayamak.com/ws/v1/sms/simple';
+		$body = wp_json_encode(
+			array(
+				'text'          => $message,
+				'line_number'   => $sender,
+				'recipients'    => array( $phone ),
+				'number_format' => 'english',
+			)
+		);
+
+		$res = wp_remote_post(
+			$url,
+			array(
+				'timeout' => 25,
+				'headers' => array(
+					'Api-Key'      => $api,
+					'Content-Type' => 'application/json',
+					'Accept'       => 'application/json',
+				),
+				'body'    => $body,
+			)
+		);
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+
+		$code = wp_remote_retrieve_response_code( $res );
+		if ( $code >= 200 && $code < 300 ) {
+			return true;
+		}
+		return self::response_error( $res );
 	}
 
 	/**
@@ -498,8 +553,10 @@ class KK_SMS {
 	 * @return array|WP_Error آرایه شامل credit و unit یا خطا.
 	 */
 	public static function get_credit() {
-		$gateway = KK_Settings::get( 'sms_gateway', 'farazsms' );
+		$gateway = KK_Settings::get( 'sms_gateway', 'iranpayamak' );
 		switch ( $gateway ) {
+			case 'iranpayamak':
+				return new WP_Error( 'kk_use_test', __( 'برای این درگاه، صحت اتصال و کلید را با دکمه «ارسال پیامک آزمایشی» بررسی کنید.', 'khabaram-kon' ) );
 			case 'farazsms':
 				return self::credit_farazsms();
 			case 'kavenegar':

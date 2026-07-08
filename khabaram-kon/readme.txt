@@ -4,7 +4,7 @@ Tags: woocommerce, back in stock, out of stock, sms, notify, ووکامرس, ن�
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.2.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 به‌محض تغییر وضعیت محصول به «موجود»، درخواست‌های در انتظار در صف قرار می‌گیرند و در پس‌زمینه ارسال می‌شوند.
 
 == Changelog ==
+
+= 1.3.0 =
+* افزودن درگاه «فراز اس‌ام‌اس / ایران‌پیامک — نسخه جدید» با آدرس api.iranpayamak.com و هدر Api-Key (endpoint ارسال ساده /ws/v1/sms/simple).
+* تنظیم این درگاه به‌عنوان پیش‌فرض برای نصب‌های جدید.
+* رفع خطای PERMISSION_DENIED برای اکانت‌های iranpayamak.com که روی زیرساخت جدید هستند.
 
 = 1.2.2 =
 * هماهنگی نام هدر احراز هویت فراز اس‌ام‌اس با SDK رسمی (Apikey).

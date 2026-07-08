@@ -56,7 +56,7 @@ class KK_Settings {
 			'accent_color'         => '#2563eb',
 
 			// پیامک.
-			'sms_gateway'          => 'kavenegar',
+			'sms_gateway'          => 'iranpayamak',
 			'sms_api_key'          => '',
 			'sms_username'         => '',
 			'sms_password'         => '',
