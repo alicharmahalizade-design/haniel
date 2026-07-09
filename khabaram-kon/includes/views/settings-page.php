@@ -213,12 +213,12 @@ $tabs       = array(
 				<tr class="kk-pattern-var">
 					<th><label for="kk_pattern_var_product"><?php esc_html_e( 'نام متغیر «محصول» در پترن', 'khabaram-kon' ); ?></label></th>
 					<td><input type="text" id="kk_pattern_var_product" name="kk_settings[pattern_var_product]" value="<?php echo esc_attr( $s['pattern_var_product'] ); ?>" class="regular-text" dir="ltr">
-						<p class="description"><?php esc_html_e( 'برای فراز اس‌ام‌اس/ایران‌پیامک: نام دقیق متغیری که در پترن برای نام محصول تعریف کرده‌اید (مثلاً product).', 'khabaram-kon' ); ?></p></td>
+						<p class="description"><?php esc_html_e( 'نام دقیق متغیر نام محصول در پترن (مثلاً product یا PRODUCT). برای SMS.ir لازم نیست دستی تنظیم کنید؛ نام‌های رایج مثل PRODUCT/NAME خودکار پر می‌شوند.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr class="kk-pattern-var">
 					<th><label for="kk_pattern_var_link"><?php esc_html_e( 'نام متغیر «لینک» در پترن', 'khabaram-kon' ); ?></label></th>
 					<td><input type="text" id="kk_pattern_var_link" name="kk_settings[pattern_var_link]" value="<?php echo esc_attr( $s['pattern_var_link'] ); ?>" class="regular-text" dir="ltr">
-						<p class="description"><?php esc_html_e( 'نام دقیق متغیر لینک کوتاه در پترن (مثلاً link). لینک کوتاه در این متغیر قرار می‌گیرد.', 'khabaram-kon' ); ?></p></td>
+						<p class="description"><?php esc_html_e( 'نام دقیق متغیر لینک در پترن (مثلاً link یا SHORTLINK). برای SMS.ir نام‌های رایج مثل LINK/SHORTLINK/URL خودکار پر می‌شوند.', 'khabaram-kon' ); ?></p></td>
 				</tr>
 				<tr>
 					<th><label for="kk_sms_message"><?php esc_html_e( 'متن پیامک', 'khabaram-kon' ); ?></label></th>

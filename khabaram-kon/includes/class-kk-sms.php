@@ -374,15 +374,40 @@ class KK_SMS {
 		}
 
 		if ( self::use_pattern( $pattern ) ) {
+			$product   = isset( $params['product'] ) ? self::pattern_safe( $params['product'] ) : '';
+			$shortlink = isset( $params['shortlink'] ) ? self::pattern_safe( $params['shortlink'] ) : '';
+
+			// نام دقیق متغیر پترن در هر پنل فرق دارد؛ چند نام رایج را می‌فرستیم
+			// (SMS.ir پارامترهای اضافی را نادیده می‌گیرد، پس فقط همانی که در پترن هست پر می‌شود).
+			$map = array(
+				'PRODUCT'   => $product,
+				'NAME'      => $product,
+				'TITLE'     => $product,
+				'LINK'      => $shortlink,
+				'SHORTLINK' => $shortlink,
+				'URL'       => $shortlink,
+			);
+			// نام‌های سفارشی از تنظیمات (در صورت تعریف).
+			$vp = strtoupper( self::en_digits( KK_Settings::get( 'pattern_var_product' ) ) );
+			$vl = strtoupper( self::en_digits( KK_Settings::get( 'pattern_var_link' ) ) );
+			if ( '' !== $vp ) {
+				$map[ $vp ] = $product;
+			}
+			if ( '' !== $vl ) {
+				$map[ $vl ] = $shortlink;
+			}
+
+			$parameters = array();
+			foreach ( $map as $name => $value ) {
+				$parameters[] = array( 'name' => $name, 'value' => $value );
+			}
+
 			$url  = 'https://api.sms.ir/v1/send/verify';
 			$body = wp_json_encode(
 				array(
 					'mobile'     => $phone,
 					'templateId' => (int) $pattern,
-					'parameters' => array(
-						array( 'name' => 'PRODUCT', 'value' => isset( $params['product'] ) ? self::pattern_safe( $params['product'] ) : '' ),
-						array( 'name' => 'LINK', 'value' => isset( $params['shortlink'] ) ? self::pattern_safe( $params['shortlink'] ) : '' ),
-					),
+					'parameters' => $parameters,
 				)
 			);
 		} else {
