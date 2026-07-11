@@ -1,0 +1,166 @@
+/* هسته هنیل شاپ — استایل پنل مدیریت */
+.hsc-wrap { direction: rtl; max-width: 1280px; }
+.hsc-wrap * { box-sizing: border-box; }
+
+.hsc-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 23px;
+}
+.hsc-title .dashicons { color: #6d28d9; font-size: 26px; width: 26px; height: 26px; }
+.hsc-subtitle { color: #6b7280; margin: 2px 0 18px; font-size: 13px; }
+
+/* نوار بالا */
+.hsc-topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+.hsc-topbar-actions { display: flex; align-items: center; gap: 12px; }
+.hsc-rebuild-time { color: #6b7280; font-size: 12px; }
+.hsc-rebuild-btn { display: inline-flex !important; align-items: center; gap: 6px; }
+.hsc-rebuild-btn .dashicons { font-size: 16px; width: 16px; height: 16px; margin-top: 4px; }
+.hsc-rebuild-btn.is-busy .dashicons { animation: hsc-spin 1s linear infinite; }
+@keyframes hsc-spin { to { transform: rotate(360deg); } }
+
+.hsc-empty-note {
+	display: flex; align-items: center; gap: 8px;
+	background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+	padding: 12px 16px; border-radius: 10px; margin: 14px 0;
+}
+
+/* KPI ها */
+.hsc-kpis {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 14px;
+	margin: 18px 0 22px;
+}
+.hsc-kpis-4 { grid-template-columns: repeat(4, 1fr); }
+.hsc-kpi {
+	display: flex; align-items: center; gap: 12px;
+	background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+	padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.hsc-kpi-icon {
+	width: 42px; height: 42px; border-radius: 11px;
+	display: flex; align-items: center; justify-content: center; flex: 0 0 42px;
+}
+.hsc-kpi-icon .dashicons { font-size: 22px; width: 22px; height: 22px; }
+.hsc-kpi-num { display: block; font-size: 20px; font-weight: 800; color: #111827; line-height: 1.3; }
+.hsc-kpi-num small { font-size: 13px; color: #7c3aed; font-weight: 700; }
+.hsc-kpi-num .woocommerce-Price-amount { font-size: 18px; }
+.hsc-kpi-label { display: block; font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+/* گرید کارت‌ها */
+.hsc-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+}
+.hsc-card {
+	background: #fff; border: 1px solid #e5e7eb; border-radius: 16px;
+	padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.hsc-col-2 { grid-column: span 2; }
+.hsc-col-4 { grid-column: span 4; }
+.hsc-card-title { display: flex; align-items: center; gap: 6px; font-size: 15px; margin: 0 0 4px; color: #111827; }
+.hsc-card-title .dashicons { color: #6d28d9; font-size: 18px; width: 18px; height: 18px; }
+.hsc-card-hint { color: #9ca3af; font-size: 12px; margin: 0 0 14px; }
+.hsc-muted { color: #9ca3af; }
+
+/* نمودار + راهنما */
+.hsc-chart-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.hsc-chart-donut { flex: 0 0 auto; }
+.hsc-legend { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 2px; }
+.hsc-legend-item {
+	display: flex; align-items: center; gap: 8px;
+	padding: 6px 8px; border-radius: 8px; text-decoration: none; color: #374151;
+	transition: background .15s;
+}
+.hsc-legend-item:hover { background: #f9fafb; }
+.hsc-legend-label { flex: 1; font-size: 13px; }
+.hsc-legend-val { font-weight: 700; color: #111827; font-size: 13px; }
+.hsc-dot { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 11px; display: inline-block; }
+
+/* جدول‌های کوچک */
+.hsc-mini-table, .hsc-source-table { width: 100%; border-collapse: collapse; }
+.hsc-mini-table th, .hsc-source-table th { text-align: right; font-size: 12px; color: #6b7280; padding: 8px 6px; border-bottom: 2px solid #f3f4f6; }
+.hsc-mini-table td, .hsc-source-table td { padding: 9px 6px; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
+.hsc-mini-table tr:last-child td { border-bottom: none; }
+.hsc-mini-table a, .hsc-source-table a { text-decoration: none; }
+
+/* بج و منبع */
+.hsc-badge {
+	display: inline-block; padding: 3px 10px; border-radius: 999px;
+	color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.hsc-src { font-size: 13px; font-weight: 600; white-space: nowrap; }
+
+/* چیپ‌ها */
+.hsc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 16px; }
+.hsc-chip {
+	display: inline-block; padding: 6px 14px; border-radius: 999px;
+	background: #fff; border: 1px solid #e5e7eb; color: #374151;
+	text-decoration: none; font-size: 13px; transition: all .15s;
+}
+.hsc-chip:hover { border-color: #c4b5fd; color: #6d28d9; }
+.hsc-chip.active { background: #6d28d9; color: #fff; border-color: #6d28d9; }
+
+/* نوار پیشرفت */
+.hsc-progress, .hsc-rfm-bar { background: #f3f4f6; border-radius: 999px; height: 8px; overflow: hidden; display: inline-block; width: 120px; vertical-align: middle; }
+.hsc-progress span, .hsc-rfm-bar span { display: block; height: 100%; border-radius: 999px; }
+
+/* منابع */
+.hsc-source-table-wrap { flex: 1; min-width: 320px; }
+.hsc-source-table td .hsc-dot { margin-left: 6px; }
+
+/* پروفایل */
+.hsc-back a { text-decoration: none; }
+.hsc-profile-head { display: flex; align-items: center; gap: 16px; margin: 10px 0 6px; flex-wrap: wrap; }
+.hsc-avatar {
+	width: 60px; height: 60px; border-radius: 16px; color: #fff;
+	display: flex; align-items: center; justify-content: center;
+	font-size: 28px; font-weight: 800; flex: 0 0 60px;
+}
+.hsc-profile-meta { flex: 1; }
+.hsc-profile-meta h1 { margin: 0 0 6px; font-size: 22px; }
+.hsc-profile-tags { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.hsc-profile-contact { color: #6b7280; font-size: 13px; margin: 0; }
+.hsc-seg-desc { color: #4b5563; background: #f9fafb; border-right: 3px solid #6d28d9; padding: 8px 12px; border-radius: 6px; margin: 12px 0 18px; }
+
+/* RFM */
+.hsc-rfm { display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; }
+.hsc-rfm-item { display: grid; grid-template-columns: 90px 60px 1fr; align-items: center; gap: 10px; }
+.hsc-rfm-label { font-size: 13px; color: #6b7280; }
+.hsc-rfm-score { font-size: 18px; font-weight: 800; }
+.hsc-rfm-score small { font-size: 11px; color: #9ca3af; font-weight: 500; }
+
+/* فوتر */
+.hsc-footnote { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 12px; margin-top: 20px; }
+.hsc-footnote .dashicons { color: #16a34a; }
+
+/* سوییچ */
+.hsc-switch { position: relative; display: inline-block; width: 46px; height: 26px; vertical-align: middle; }
+.hsc-switch input { opacity: 0; width: 0; height: 0; }
+.hsc-switch span { position: absolute; cursor: pointer; inset: 0; background: #cbd5e1; border-radius: 999px; transition: .25s; }
+.hsc-switch span:before { content: ""; position: absolute; height: 20px; width: 20px; right: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .25s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.hsc-switch input:checked + span { background: #6d28d9; }
+.hsc-switch input:checked + span:before { transform: translateX(-20px); }
+
+/* واکنش‌گرا */
+@media (max-width: 1100px) {
+	.hsc-kpis { grid-template-columns: repeat(3, 1fr); }
+	.hsc-grid { grid-template-columns: repeat(2, 1fr); }
+	.hsc-col-2 { grid-column: span 1; }
+	.hsc-col-4 { grid-column: span 2; }
+}
+@media (max-width: 782px) {
+	.hsc-kpis, .hsc-kpis-4 { grid-template-columns: repeat(2, 1fr); }
+	.hsc-grid { grid-template-columns: 1fr; }
+	.hsc-col-2, .hsc-col-4 { grid-column: span 1; }
+}
